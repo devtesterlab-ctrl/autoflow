@@ -1,0 +1,233 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Plan {
+  FREE
+  STARTER
+  PRO
+}
+
+enum Role {
+  OWNER
+  SELLER
+}
+
+enum Currency {
+  ARS
+  USD
+}
+
+enum Transmission {
+  MANUAL
+  AUTOMATIC
+}
+
+enum FuelType {
+  NAFTA
+  DIESEL
+  GNC
+  HYBRID
+  ELECTRIC
+}
+
+enum VehicleStatus {
+  PREPARATION
+  AVAILABLE
+  RESERVED
+  SOLD
+}
+
+enum LeadSource {
+  WHATSAPP_CATALOG
+  MANUAL
+  INSTAGRAM
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  VISIT_SCHEDULED
+  NEGOTIATING
+  WON
+  LOST
+}
+
+enum ActivityType {
+  CREATED
+  NOTE
+  STATUS_CHANGE
+  FOLLOW_UP_SET
+}
+
+model Tenant {
+  id                  String   @id @default(cuid())
+  name                String
+  slug                String   @unique
+  customDomain        String?  @unique
+  logoUrl             String?
+  primaryColor        String   @default("#111111")
+  whatsappNumber      String?
+  address             String?
+  city                String?
+  instagramHandle     String?
+  plan                Plan     @default(FREE)
+  isActive            Boolean  @default(true)
+  onboardingCompleted Boolean  @default(false)
+  notifyNewLeads      Boolean  @default(true)
+  notifyEmail         String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  users         User[]
+  vehicles      Vehicle[]
+  vehicleImages VehicleImage[]
+  leads         Lead[]
+  activities    Activity[]
+
+  @@map("tenants")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  sessionVersion Int    @default(0)
+  role         Role     @default(SELLER)
+  tenantId     String
+  createdAt    DateTime @default(now())
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  activities Activity[]
+  passwordResetTokens PasswordResetToken[]
+
+  @@index([tenantId])
+  @@map("users")
+}
+
+model Vehicle {
+  id           String        @id @default(cuid())
+  tenantId     String
+  brand        String
+  model        String
+  version      String?
+  year         Int
+  mileage      Int
+  price        Decimal       @db.Decimal(14, 2)
+  currency     Currency      @default(ARS)
+  transmission Transmission
+  fuelType     FuelType
+  color        String?
+  description  String?
+  features     String[]
+  status       VehicleStatus @default(PREPARATION)
+  isFeatured   Boolean       @default(false)
+  order        Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  tenant Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  images VehicleImage[]
+  leads  Lead[]
+
+  @@index([tenantId, status])
+  @@index([tenantId, order])
+  @@index([tenantId, isFeatured])
+  @@index([tenantId, brand])
+  @@map("vehicles")
+}
+
+model VehicleImage {
+  id        String   @id @default(cuid())
+  vehicleId String
+  tenantId  String
+  url       String
+  key       String
+  isCover   Boolean  @default(false)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([vehicleId, order])
+  @@map("vehicle_images")
+}
+
+model Lead {
+  id           String     @id @default(cuid())
+  tenantId     String
+  vehicleId    String?
+  clientName   String
+  clientPhone  String?
+  source       LeadSource @default(MANUAL)
+  status       LeadStatus @default(NEW)
+  notes        String?
+  nextFollowUp DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  vehicle    Vehicle?   @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  activities Activity[]
+
+  @@index([tenantId, status])
+  @@index([tenantId, nextFollowUp])
+  @@index([tenantId, createdAt])
+  @@index([vehicleId])
+  @@map("leads")
+}
+
+model Activity {
+  id        String       @id @default(cuid())
+  tenantId  String
+  leadId    String
+  userId    String?
+  type      ActivityType
+  content   String?
+  createdAt DateTime     @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  user   User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, leadId])
+  @@index([leadId, createdAt])
+  @@map("activities")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+model AdminAuditLog {
+  id         String   @id @default(cuid())
+  adminEmail String
+  tenantId   String?
+  tenantName String?
+  action     String
+  detail     String?
+  createdAt  DateTime @default(now())
+
+  @@index([tenantId, createdAt])
+  @@index([createdAt])
+  @@map("admin_audit_logs")
+}

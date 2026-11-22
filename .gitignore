@@ -1,0 +1,24 @@
+# dependencias
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+
+# next.js
+/.next/
+/out/
+/build
+
+# variables de entorno (nunca se suben; el ejemplo sí)
+.env*
+!.env.example
+
+# varios
+.DS_Store
+*.pem
+npm-debug.log*
+*.tsbuildinfo
+next-env.d.ts
+
+# vercel
+.vercel
