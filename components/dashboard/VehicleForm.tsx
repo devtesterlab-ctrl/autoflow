@@ -87,7 +87,7 @@ const SECTION_OF_FIELD: Record<string, SectionKey> = {
 };
 
 const INPUT_CLASS =
-  "h-14 w-full border-2 border-black bg-transparent px-4 text-base outline-none focus:ring-4 focus:ring-black/20 dark:border-white dark:focus:ring-white/30";
+  "h-12 w-full border border-neutral-300 bg-white px-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl";
 
 const digitsOnly = (value: string) => value.replace(/\D/g, "");
 const formatThousands = (value: string) => {
@@ -123,21 +123,21 @@ function Section(props: {
   children: ReactNode;
 }) {
   return (
-    <section className="border-2 border-black dark:border-white">
+    <section className="border border-neutral-200 dark:border-white/10 rounded-xl">
       <button
         type="button"
         onClick={props.onToggle}
         aria-expanded={props.open}
-        className="flex h-14 w-full items-center justify-between px-4 text-left"
+        className="flex h-12 w-full items-center justify-between px-4 text-left"
       >
-        <span className="text-base font-extrabold">
+        <span className="text-base font-semibold">
           {props.title}
           {props.hasError ? <span className="ml-2 text-red-600">●</span> : null}
         </span>
         <ChevronDown className={`h-5 w-5 transition-transform ${props.open ? "rotate-180" : ""}`} />
       </button>
       {props.open ? (
-        <div className="space-y-5 border-t-2 border-black p-4 dark:border-white">{props.children}</div>
+        <div className="space-y-5 border-t border-neutral-200 p-4 dark:border-white/10">{props.children}</div>
       ) : null}
     </section>
   );
@@ -146,9 +146,9 @@ function Section(props: {
 function Field(props: { label: string; error?: string; children: ReactNode }) {
   return (
     <label className="block space-y-1">
-      <span className="text-sm font-semibold">{props.label}</span>
+      <span className="text-sm font-medium">{props.label}</span>
       {props.children}
-      {props.error ? <span className="block text-sm font-semibold text-red-600">{props.error}</span> : null}
+      {props.error ? <span className="block text-sm font-medium text-red-600">{props.error}</span> : null}
     </label>
   );
 }
@@ -339,11 +339,11 @@ export function VehicleForm({ vehicleId, mode, initial, defaultStatus }: Vehicle
           type="button"
           aria-pressed={values.isFeatured}
           onClick={() => set("isFeatured", !values.isFeatured)}
-          className={`flex h-14 w-full items-center justify-between border-2 px-4 text-base font-bold ${
+          className={`flex h-12 w-full items-center justify-between border px-4 text-base font-semibold ${
             values.isFeatured
-              ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
-              : "border-black/30 dark:border-white/30"
-          }`}
+              ? "border-transparent bg-neutral-900 text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
+              : "border-neutral-200 dark:border-white/10"
+          } rounded-xl`}
         >
           <span>Destacar en el catálogo</span>
           <span>{values.isFeatured ? "Sí" : "No"}</span>
@@ -386,7 +386,7 @@ export function VehicleForm({ vehicleId, mode, initial, defaultStatus }: Vehicle
         onToggle={() => setOpen((previous) => ({ ...previous, photos: !previous.photos }))}
       >
         <ImageUploader vehicleId={stableId} images={images} onChange={setImages} disabled={pending} />
-        {errors.images ? <p className="text-sm font-semibold text-red-600">{errors.images}</p> : null}
+        {errors.images ? <p className="text-sm font-medium text-red-600">{errors.images}</p> : null}
       </Section>
 
       <Section
@@ -396,7 +396,7 @@ export function VehicleForm({ vehicleId, mode, initial, defaultStatus }: Vehicle
         onToggle={() => setOpen((previous) => ({ ...previous, detail: !previous.detail }))}
       >
         <div className="space-y-2">
-          <span className="block text-sm font-semibold">Equipamiento</span>
+          <span className="block text-sm font-medium">Equipamiento</span>
           {values.features.length > 0 ? (
             <ul className="flex flex-wrap gap-2">
               {values.features.map((feature) => (
@@ -404,7 +404,7 @@ export function VehicleForm({ vehicleId, mode, initial, defaultStatus }: Vehicle
                   <button
                     type="button"
                     onClick={() => set("features", values.features.filter((item) => item !== feature))}
-                    className="flex h-10 items-center gap-1 border-2 border-black bg-black px-3 text-sm font-bold text-white dark:border-white dark:bg-white dark:text-black"
+                    className="flex h-10 items-center gap-1 border border-transparent bg-neutral-900 px-3 text-sm font-semibold text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
                   >
                     {feature} <X className="h-4 w-4" />
                   </button>
@@ -429,7 +429,7 @@ export function VehicleForm({ vehicleId, mode, initial, defaultStatus }: Vehicle
               type="button"
               aria-label="Agregar equipamiento"
               onClick={() => addFeature(featureDraft)}
-              className="flex h-14 w-14 shrink-0 items-center justify-center border-2 border-black dark:border-white"
+              className="flex h-12 w-12 shrink-0 items-center justify-center border border-neutral-300 dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
             >
               <Plus className="h-6 w-6" />
             </button>
@@ -441,7 +441,7 @@ export function VehicleForm({ vehicleId, mode, initial, defaultStatus }: Vehicle
                   <button
                     type="button"
                     onClick={() => addFeature(suggestion)}
-                    className="h-10 border-2 border-black/30 px-3 text-sm font-semibold dark:border-white/30"
+                    className="h-10 border border-neutral-300 px-3 text-sm font-medium dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
                   >
                     + {suggestion}
                   </button>
@@ -449,7 +449,7 @@ export function VehicleForm({ vehicleId, mode, initial, defaultStatus }: Vehicle
               ))}
             </ul>
           ) : null}
-          {errors.features ? <p className="text-sm font-semibold text-red-600">{errors.features}</p> : null}
+          {errors.features ? <p className="text-sm font-medium text-red-600">{errors.features}</p> : null}
         </div>
 
         <Field label="Descripción (opcional)" error={errors.description}>
@@ -457,30 +457,30 @@ export function VehicleForm({ vehicleId, mode, initial, defaultStatus }: Vehicle
             value={values.description}
             onChange={(event) => set("description", event.target.value)}
             rows={4}
-            className="w-full border-2 border-black bg-transparent p-4 text-base outline-none focus:ring-4 focus:ring-black/20 dark:border-white dark:focus:ring-white/30"
+            className="w-full border border-neutral-300 bg-white p-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-2xl shadow-sm"
             placeholder="Único dueño, service oficial al día…"
           />
         </Field>
       </Section>
 
-      <div className="sticky bottom-20 z-10 space-y-2 border-2 border-black bg-white p-3 md:bottom-4 dark:border-white dark:bg-neutral-950">
+      <div className="sticky bottom-20 z-10 space-y-2 border border-neutral-200 bg-white/70 p-3 md:bottom-4 dark:border-white/10 dark:bg-neutral-950/60 backdrop-blur-xl rounded-2xl">
         {formError ? (
-          <p role="alert" className="text-sm font-bold text-red-600">
+          <p role="alert" className="text-sm font-semibold text-red-600">
             {formError}
           </p>
         ) : null}
-        {uploading ? <p className="text-sm font-semibold">Esperá a que terminen de subir las fotos…</p> : null}
+        {uploading ? <p className="text-sm font-medium">Esperá a que terminen de subir las fotos…</p> : null}
         <div className="grid grid-cols-[1fr_2fr] gap-3">
           <Link
             href="/dashboard/vehicles"
-            className="flex h-14 items-center justify-center border-2 border-black text-base font-bold dark:border-white"
+            className="flex h-12 items-center justify-center border border-neutral-300 text-base font-semibold dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
           >
             Cancelar
           </Link>
           <button
             type="submit"
             disabled={pending || uploading}
-            className="flex h-14 items-center justify-center gap-2 border-2 border-black bg-black text-lg font-extrabold text-white disabled:opacity-50 dark:border-white dark:bg-white dark:text-black"
+            className="flex h-12 items-center justify-center gap-2 border border-transparent bg-neutral-900 text-base font-semibold text-white disabled:opacity-50 dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
           >
             {pending ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
             {mode === "create" ? "Publicar auto" : "Guardar cambios"}

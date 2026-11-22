@@ -32,7 +32,7 @@ interface LeadDrawerProps {
 }
 
 const INPUT_CLASS =
-  "h-14 w-full border-2 border-black bg-transparent px-4 text-base outline-none focus:ring-4 focus:ring-black/20 dark:border-white dark:focus:ring-white/30";
+  "h-12 w-full border border-neutral-300 bg-white px-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl";
 
 const STATUS_OPTIONS = LEAD_STATUS_VALUES.map((value) => ({ value, label: LEAD_STATUS_LABELS[value] }));
 
@@ -168,15 +168,15 @@ export function LeadDrawer(props: LeadDrawerProps) {
       role="dialog"
       aria-modal="true"
       aria-label={mode === "create" ? "Nuevo lead" : `Lead ${lead?.clientName}`}
-      className="fixed inset-0 z-50 flex items-end bg-black/60 lg:items-stretch lg:justify-end"
+      className="fixed inset-0 z-50 flex items-end bg-black/40 lg:items-stretch lg:justify-end backdrop-blur-sm"
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div className="flex max-h-[92dvh] w-full flex-col border-2 border-black bg-white lg:max-h-none lg:w-[28rem] dark:border-white dark:bg-neutral-950">
-        <div className="flex items-start justify-between gap-3 border-b-2 border-black p-4 dark:border-white">
+      <div className="flex max-h-[92dvh] w-full flex-col border border-neutral-200 bg-white/85 lg:max-h-none lg:w-[28rem] dark:border-white/10 dark:bg-neutral-950/80 shadow-2xl rounded-t-3xl lg:rounded-none lg:rounded-l-3xl">
+        <div className="flex items-start justify-between gap-3 border-b border-neutral-200 p-4 dark:border-white/10">
           <div className="min-w-0">
-            <h2 className="truncate text-xl font-extrabold">{mode === "create" ? "Nuevo lead" : lead?.clientName}</h2>
+            <h2 className="truncate text-xl font-semibold font-display">{mode === "create" ? "Nuevo lead" : lead?.clientName}</h2>
             {mode === "edit" && lead ? (
               <p className="text-sm text-neutral-600 dark:text-neutral-400">
                 {LEAD_SOURCE_LABELS[lead.source]}
@@ -188,7 +188,7 @@ export function LeadDrawer(props: LeadDrawerProps) {
             type="button"
             aria-label="Cerrar"
             onClick={onClose}
-            className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-black dark:border-white"
+            className="flex h-11 w-11 shrink-0 items-center justify-center border border-neutral-300 dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
           >
             <X className="h-5 w-5" />
           </button>
@@ -202,7 +202,7 @@ export function LeadDrawer(props: LeadDrawerProps) {
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-14 items-center justify-center gap-2 border-2 border-emerald-700 bg-emerald-600 font-extrabold text-white"
+                  className="flex h-12 items-center justify-center gap-2 border border-emerald-700 bg-emerald-600 font-semibold text-white rounded-xl"
                 >
                   <MessageCircle className="h-5 w-5" /> WhatsApp
                 </a>
@@ -212,7 +212,7 @@ export function LeadDrawer(props: LeadDrawerProps) {
               {phone ? (
                 <a
                   href={`tel:${phone.replace(/[^\d+]/g, "")}`}
-                  className="flex h-14 items-center justify-center gap-2 border-2 border-black font-bold dark:border-white"
+                  className="flex h-12 items-center justify-center gap-2 border border-neutral-300 font-semibold dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
                 >
                   <Phone className="h-5 w-5" /> Llamar
                 </a>
@@ -222,7 +222,7 @@ export function LeadDrawer(props: LeadDrawerProps) {
 
           {mode === "edit" ? (
             <div className="space-y-2">
-              <label htmlFor="quick-note" className="text-sm font-semibold">
+              <label htmlFor="quick-note" className="text-sm font-medium">
                 Nota rápida
               </label>
               <div className="flex gap-2">
@@ -244,7 +244,7 @@ export function LeadDrawer(props: LeadDrawerProps) {
                   type="button"
                   onClick={() => void submitNote()}
                   disabled={noteBusy || !noteDraft.trim()}
-                  className="flex h-14 shrink-0 items-center justify-center border-2 border-black bg-black px-4 font-bold text-white disabled:opacity-40 dark:border-white dark:bg-white dark:text-black"
+                  className="flex h-12 shrink-0 items-center justify-center border border-transparent bg-neutral-900 px-4 font-semibold text-white disabled:opacity-40 dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
                 >
                   {noteBusy ? <Loader2 className="h-5 w-5 animate-spin" /> : "Agregar"}
                 </button>
@@ -262,7 +262,7 @@ export function LeadDrawer(props: LeadDrawerProps) {
 
           {!closed ? (
             <div className="space-y-2">
-              <label htmlFor="follow-up" className="text-sm font-semibold">
+              <label htmlFor="follow-up" className="text-sm font-medium">
                 Próximo contacto
               </label>
               <input
@@ -272,7 +272,7 @@ export function LeadDrawer(props: LeadDrawerProps) {
                 onChange={(event) => setFollowUp(event.target.value)}
                 className={INPUT_CLASS}
               />
-              {errors.nextFollowUp ? <p className="text-sm font-semibold text-red-600">{errors.nextFollowUp}</p> : null}
+              {errors.nextFollowUp ? <p className="text-sm font-medium text-red-600">{errors.nextFollowUp}</p> : null}
               <div className="flex flex-wrap gap-2">
                 {[
                   { label: "Mañana", days: 1 },
@@ -283,7 +283,7 @@ export function LeadDrawer(props: LeadDrawerProps) {
                     key={preset.label}
                     type="button"
                     onClick={() => setFollowUp(followUpPreset(preset.days))}
-                    className="h-11 border-2 border-black/40 px-3 text-sm font-bold dark:border-white/40"
+                    className="h-11 border border-neutral-300 px-3 text-sm font-semibold dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
                   >
                     {preset.label}
                   </button>
@@ -292,7 +292,7 @@ export function LeadDrawer(props: LeadDrawerProps) {
                   <button
                     type="button"
                     onClick={() => setFollowUp("")}
-                    className="h-11 px-3 text-sm font-bold underline underline-offset-4"
+                    className="h-11 px-3 text-sm font-semibold underline underline-offset-4"
                   >
                     Quitar
                   </button>
@@ -302,7 +302,7 @@ export function LeadDrawer(props: LeadDrawerProps) {
           ) : null}
 
           <label className="block space-y-1">
-            <span className="text-sm font-semibold">Nombre</span>
+            <span className="text-sm font-medium">Nombre</span>
             <input
               value={name}
               onChange={(event) => setName(event.target.value)}
@@ -310,11 +310,11 @@ export function LeadDrawer(props: LeadDrawerProps) {
               className={INPUT_CLASS}
               placeholder="Juan Pérez"
             />
-            {errors.clientName ? <span className="block text-sm font-semibold text-red-600">{errors.clientName}</span> : null}
+            {errors.clientName ? <span className="block text-sm font-medium text-red-600">{errors.clientName}</span> : null}
           </label>
 
           <label className="block space-y-1">
-            <span className="text-sm font-semibold">Teléfono / WhatsApp</span>
+            <span className="text-sm font-medium">Teléfono / WhatsApp</span>
             <input
               value={phone}
               onChange={(event) => setPhone(event.target.value)}
@@ -324,11 +324,11 @@ export function LeadDrawer(props: LeadDrawerProps) {
               className={INPUT_CLASS}
               placeholder="11 5555 1234"
             />
-            {errors.clientPhone ? <span className="block text-sm font-semibold text-red-600">{errors.clientPhone}</span> : null}
+            {errors.clientPhone ? <span className="block text-sm font-medium text-red-600">{errors.clientPhone}</span> : null}
           </label>
 
           <label className="block space-y-1">
-            <span className="text-sm font-semibold">Auto de interés</span>
+            <span className="text-sm font-medium">Auto de interés</span>
             <select
               value={vehicleId}
               onChange={(event) => setVehicleId(event.target.value)}
@@ -341,7 +341,7 @@ export function LeadDrawer(props: LeadDrawerProps) {
                 </option>
               ))}
             </select>
-            {errors.vehicleId ? <span className="block text-sm font-semibold text-red-600">{errors.vehicleId}</span> : null}
+            {errors.vehicleId ? <span className="block text-sm font-medium text-red-600">{errors.vehicleId}</span> : null}
           </label>
 
           {mode === "create" ? (
@@ -353,20 +353,20 @@ export function LeadDrawer(props: LeadDrawerProps) {
                 onChange={(value) => setSource(value)}
               />
               <label className="block space-y-1">
-                <span className="text-sm font-semibold">Nota (opcional)</span>
+                <span className="text-sm font-medium">Nota (opcional)</span>
                 <textarea
                   value={notes}
                   onChange={(event) => setNotes(event.target.value)}
                   rows={3}
                   maxLength={500}
-                  className="w-full border-2 border-black bg-transparent p-4 text-base outline-none focus:ring-4 focus:ring-black/20 dark:border-white dark:focus:ring-white/30"
+                  className="w-full border border-neutral-300 bg-white p-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-2xl shadow-sm"
                   placeholder="Busca algo hasta USD 20.000…"
                 />
               </label>
             </>
           ) : (
             <section aria-labelledby="timeline-title" className="space-y-3">
-              <h3 id="timeline-title" className="text-sm font-extrabold uppercase tracking-widest">
+              <h3 id="timeline-title" className="text-sm font-semibold uppercase tracking-wider">
                 Historial
               </h3>
               {activities === null ? (
@@ -374,10 +374,10 @@ export function LeadDrawer(props: LeadDrawerProps) {
               ) : activities.length === 0 ? (
                 <p className="text-sm text-neutral-600 dark:text-neutral-400">Sin actividad todavía.</p>
               ) : (
-                <ol className="space-y-3 border-l-4 border-black pl-4 dark:border-white">
+                <ol className="space-y-3 border-l-2 border-neutral-200 pl-4 dark:border-white/10">
                   {activities.map((activity) => (
                     <li key={activity.id}>
-                      <p className="text-sm font-semibold">{describeActivity(activity)}</p>
+                      <p className="text-sm font-medium">{describeActivity(activity)}</p>
                       <p className="text-xs text-neutral-500">
                         {now !== null ? timeAgo(activity.createdAt, now) : ""}
                         {activity.userName ? ` · ${activity.userName}` : ""}
@@ -393,16 +393,16 @@ export function LeadDrawer(props: LeadDrawerProps) {
             <button
               type="button"
               onClick={() => void remove()}
-              className="flex h-11 items-center gap-2 text-sm font-bold text-red-600"
+              className="flex h-11 items-center gap-2 text-sm font-semibold text-red-600"
             >
               <Trash2 className="h-4 w-4" /> Eliminar lead
             </button>
           ) : null}
         </div>
 
-        <div className="space-y-2 border-t-2 border-black p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] dark:border-white">
+        <div className="space-y-2 border-t border-neutral-200 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] dark:border-white/10">
           {error ? (
-            <p role="alert" className="text-sm font-bold text-red-600">
+            <p role="alert" className="text-sm font-semibold text-red-600">
               {error}
             </p>
           ) : null}
@@ -410,7 +410,7 @@ export function LeadDrawer(props: LeadDrawerProps) {
             type="button"
             onClick={save}
             disabled={pending}
-            className="flex h-14 w-full items-center justify-center gap-2 border-2 border-black bg-black text-lg font-extrabold text-white disabled:opacity-50 dark:border-white dark:bg-white dark:text-black"
+            className="flex h-12 w-full items-center justify-center gap-2 border border-transparent bg-neutral-900 text-base font-semibold text-white disabled:opacity-50 dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
           >
             {pending ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
             {mode === "create" ? "Guardar lead" : "Guardar cambios"}

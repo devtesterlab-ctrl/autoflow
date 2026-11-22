@@ -385,25 +385,25 @@ export function InstagramStoryGenerator(props: {
       role="dialog"
       aria-modal="true"
       aria-label="Placa para historia de Instagram"
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 sm:items-center"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center backdrop-blur-sm"
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div className="flex max-h-[96dvh] w-full max-w-md flex-col gap-4 overflow-y-auto border-2 border-black bg-white p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] dark:border-white dark:bg-neutral-950">
+      <div className="flex max-h-[96dvh] w-full max-w-md flex-col gap-4 overflow-y-auto border border-neutral-200 bg-white/85 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] dark:border-white/10 dark:bg-neutral-950/80 shadow-2xl rounded-t-3xl sm:rounded-3xl">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-xl font-extrabold">Placa para historia</h2>
+          <h2 className="text-xl font-semibold font-display">Placa para historia</h2>
           <button
             type="button"
             aria-label="Cerrar"
             onClick={onClose}
-            className="flex h-11 w-11 items-center justify-center border-2 border-black dark:border-white"
+            className="flex h-11 w-11 items-center justify-center border border-neutral-300 dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <div className="relative mx-auto aspect-[9/16] h-[52dvh] max-h-[640px] border-2 border-black bg-neutral-200 dark:border-white dark:bg-neutral-800">
+        <div className="relative mx-auto aspect-[9/16] h-[52dvh] max-h-[640px] border border-neutral-200 bg-neutral-200 dark:border-white/10 dark:bg-neutral-800 rounded-xl overflow-hidden">
           <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} className="h-full w-full" aria-label="Vista previa de la placa" />
           {!ready ? (
             <div className="absolute inset-0 flex items-center justify-center">
@@ -419,11 +419,11 @@ export function InstagramStoryGenerator(props: {
               type="button"
               aria-pressed={theme === value}
               onClick={() => setTheme(value)}
-              className={`h-12 border-2 text-sm font-bold ${
+              className={`h-12 border text-sm font-semibold ${
                 theme === value
-                  ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
-                  : "border-black/30 dark:border-white/30"
-              }`}
+                  ? "border-transparent bg-neutral-900 text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
+                  : "border-neutral-200 dark:border-white/10"
+              } rounded-xl`}
             >
               {value === "dark" ? "Oscura" : "Clara"}
             </button>
@@ -431,7 +431,7 @@ export function InstagramStoryGenerator(props: {
         </div>
 
         {error ? (
-          <p role="alert" className="text-sm font-bold text-red-600">
+          <p role="alert" className="text-sm font-semibold text-red-600">
             {error}
           </p>
         ) : null}
@@ -440,7 +440,7 @@ export function InstagramStoryGenerator(props: {
           type="button"
           disabled={!ready || busy}
           onClick={() => void handleDownload(false)}
-          className="flex h-14 items-center justify-center gap-2 border-2 border-black bg-black text-lg font-extrabold text-white disabled:opacity-50 dark:border-white dark:bg-white dark:text-black"
+          className="flex h-12 items-center justify-center gap-2 border border-transparent bg-neutral-900 text-base font-semibold text-white disabled:opacity-50 dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
         >
           {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : <Download className="h-5 w-5" />}
           Descargar placa para historia
@@ -449,7 +449,7 @@ export function InstagramStoryGenerator(props: {
           type="button"
           disabled={!ready || busy}
           onClick={() => void handleDownload(true)}
-          className="h-11 text-sm font-bold underline underline-offset-4 disabled:opacity-50"
+          className="h-11 text-sm font-semibold underline underline-offset-4 disabled:opacity-50"
         >
           Solo bajar el archivo .png
         </button>

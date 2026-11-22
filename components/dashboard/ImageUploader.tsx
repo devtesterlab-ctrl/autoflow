@@ -4,6 +4,7 @@ import { useRef, useState, type Dispatch, type SetStateAction } from "react";
 import imageCompression from "browser-image-compression";
 import { AlertCircle, Camera, ChevronLeft, ChevronRight, ImagePlus, Loader2, Star, Trash2 } from "lucide-react";
 import { deleteUploadedObject } from "@/app/dashboard/vehicles/actions";
+import { isHeicFile, normalizeImageFile, TRANSPARENT_PIXEL } from "@/lib/image-input";
 import { MAX_UPLOAD_BYTES, type PresignedResponse } from "@/lib/validators/upload";
 import { MAX_IMAGES_PER_VEHICLE } from "@/lib/validators/vehicle";
 
@@ -76,7 +77,11 @@ export function ImageUploader({ vehicleId, images, onChange, disabled = false }:
 
   async function processFile(file: File, localId: string): Promise<void> {
     try {
-      const compressed = await imageCompression(file, {
+      // Las fotos HEIC del iPhone se convierten a JPEG antes de optimizarlas.
+      const source = await normalizeImageFile(file);
+      if (source !== file) patch(localId, { url: URL.createObjectURL(source) });
+
+      const compressed = await imageCompression(source, {
         maxWidthOrHeight: 1600,
         initialQuality: 0.82,
         fileType: "image/webp",
@@ -117,7 +122,7 @@ export function ImageUploader({ vehicleId, images, onChange, disabled = false }:
     if (!fileList) return;
     setNotice(null);
 
-    const files = Array.from(fileList).filter((file) => file.type.startsWith("image/"));
+    const files = Array.from(fileList).filter((file) => file.type.startsWith("image/") || isHeicFile(file));
     const free = Math.max(0, MAX_IMAGES_PER_VEHICLE - images.length);
     if (files.length > free) setNotice(`Máximo ${MAX_IMAGES_PER_VEHICLE} fotos por auto.`);
 
@@ -132,7 +137,7 @@ export function ImageUploader({ vehicleId, images, onChange, disabled = false }:
         return {
           localId,
           key: null,
-          url: URL.createObjectURL(file),
+          url: isHeicFile(file) ? TRANSPARENT_PIXEL : URL.createObjectURL(file),
           isCover,
           status: "compressing",
           progress: 0,
@@ -178,7 +183,7 @@ export function ImageUploader({ vehicleId, images, onChange, disabled = false }:
           type="button"
           disabled={disabled || full}
           onClick={() => galleryRef.current?.click()}
-          className="flex h-14 items-center justify-center gap-2 border-2 border-black text-base font-bold active:translate-y-px disabled:opacity-40 dark:border-white"
+          className="flex h-12 items-center justify-center gap-2 border border-neutral-300 text-base font-semibold active:scale-[0.98] disabled:opacity-40 dark:border-white/20 transition rounded-xl bg-white dark:bg-white/5"
         >
           <ImagePlus className="h-5 w-5" /> Galería
         </button>
@@ -186,7 +191,7 @@ export function ImageUploader({ vehicleId, images, onChange, disabled = false }:
           type="button"
           disabled={disabled || full}
           onClick={() => cameraRef.current?.click()}
-          className="flex h-14 items-center justify-center gap-2 border-2 border-black text-base font-bold active:translate-y-px disabled:opacity-40 dark:border-white"
+          className="flex h-12 items-center justify-center gap-2 border border-neutral-300 text-base font-semibold active:scale-[0.98] disabled:opacity-40 dark:border-white/20 transition rounded-xl bg-white dark:bg-white/5"
         >
           <Camera className="h-5 w-5" /> Cámara
         </button>
@@ -195,7 +200,7 @@ export function ImageUploader({ vehicleId, images, onChange, disabled = false }:
       <input
         ref={galleryRef}
         type="file"
-        accept="image/*"
+        accept="image/*,.heic,.heif"
         multiple
         hidden
         onChange={(event) => {
@@ -206,7 +211,7 @@ export function ImageUploader({ vehicleId, images, onChange, disabled = false }:
       <input
         ref={cameraRef}
         type="file"
-        accept="image/*"
+        accept="image/*,.heic,.heif"
         capture="environment"
         hidden
         onChange={(event) => {
@@ -215,7 +220,7 @@ export function ImageUploader({ vehicleId, images, onChange, disabled = false }:
         }}
       />
 
-      {notice ? <p className="text-sm font-semibold text-amber-700 dark:text-amber-400">{notice}</p> : null}
+      {notice ? <p className="text-sm font-medium text-amber-700 dark:text-amber-400">{notice}</p> : null}
 
       <p className="text-sm text-neutral-600 dark:text-neutral-400">
         {images.length} de {MAX_IMAGES_PER_VEHICLE} fotos. La estrella marca la portada.
@@ -226,13 +231,13 @@ export function ImageUploader({ vehicleId, images, onChange, disabled = false }:
           {images.map((item, index) => {
             const busy = item.status === "compressing" || item.status === "uploading";
             return (
-              <li key={item.localId} className="border-2 border-black dark:border-white">
+              <li key={item.localId} className="overflow-hidden border border-neutral-200 dark:border-white/10 rounded-xl">
                 <div className="relative aspect-[4/3] bg-neutral-200 dark:bg-neutral-800">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={item.url} alt={`Foto ${index + 1}`} className="h-full w-full object-cover" />
 
                   {item.isCover ? (
-                    <span className="absolute left-2 top-2 bg-black px-2 py-1 text-xs font-extrabold text-white dark:bg-white dark:text-black">
+                    <span className="absolute left-2 top-2 bg-neutral-900 px-2 py-1 text-xs font-semibold text-white dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-md">
                       PORTADA
                     </span>
                   ) : null}
@@ -240,7 +245,7 @@ export function ImageUploader({ vehicleId, images, onChange, disabled = false }:
                   {busy ? (
                     <div className="absolute inset-0 flex flex-col items-center justify-end gap-2 bg-black/50 p-3 text-white">
                       <Loader2 className="h-6 w-6 animate-spin" />
-                      <span className="text-xs font-bold">
+                      <span className="text-xs font-semibold">
                         {item.status === "compressing" ? "Optimizando…" : `Subiendo ${item.progress}%`}
                       </span>
                       <div className="h-2 w-full bg-white/30">
@@ -255,12 +260,12 @@ export function ImageUploader({ vehicleId, images, onChange, disabled = false }:
                   {item.status === "error" ? (
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-red-700/85 p-3 text-center text-white">
                       <AlertCircle className="h-6 w-6" />
-                      <span className="text-xs font-bold">{item.error ?? "Error al subir"}</span>
+                      <span className="text-xs font-semibold">{item.error ?? "Error al subir"}</span>
                     </div>
                   ) : null}
                 </div>
 
-                <div className="grid grid-cols-4 border-t-2 border-black dark:border-white">
+                <div className="grid grid-cols-4 border-t border-neutral-200 dark:border-white/10">
                   <button
                     type="button"
                     aria-label="Mover antes"

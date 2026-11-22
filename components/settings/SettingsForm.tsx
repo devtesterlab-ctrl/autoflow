@@ -8,6 +8,7 @@ import { updateTenantSettings } from "@/app/dashboard/settings/actions";
 import { checkSlugAvailability, type SlugStatus } from "@/app/onboarding/actions";
 import { CatalogPreview } from "@/components/onboarding/CatalogPreview";
 import { slugSchema } from "@/lib/slug";
+import { normalizeImageFile } from "@/lib/image-input";
 import { putWithProgress } from "@/lib/upload-client";
 import { normalizeArgentineWhatsapp } from "@/lib/validators/onboarding";
 import { settingsSchema } from "@/lib/validators/settings";
@@ -38,15 +39,15 @@ type Message = { type: "ok" | "error"; text: string } | null;
 const COLOR_PRESETS = ["#E11D48", "#EA580C", "#CA8A04", "#16A34A", "#0F766E", "#0284C7", "#4F46E5", "#9333EA", "#DB2777", "#111111"];
 const HEX_COLOR = /^#[0-9a-fA-F]{6}$/;
 const INPUT_CLASS =
-  "h-14 w-full border-2 border-black bg-transparent px-4 text-base outline-none focus:ring-4 focus:ring-black/20 dark:border-white dark:focus:ring-white/30";
+  "h-12 w-full border border-neutral-300 bg-white px-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl";
 
 function Field(props: { label: string; hint?: string; error?: string; children: React.ReactNode }) {
   return (
     <label className="block space-y-1">
-      <span className="text-sm font-semibold">{props.label}</span>
+      <span className="text-sm font-medium">{props.label}</span>
       {props.children}
       {props.error ? (
-        <span className="block text-sm font-semibold text-red-600">{props.error}</span>
+        <span className="block text-sm font-medium text-red-600">{props.error}</span>
       ) : props.hint ? (
         <span className="block text-sm text-neutral-600 dark:text-neutral-400">{props.hint}</span>
       ) : null}
@@ -56,8 +57,8 @@ function Field(props: { label: string; hint?: string; error?: string; children: 
 
 function Section(props: { title: string; children: React.ReactNode }) {
   return (
-    <section className="space-y-4 border-2 border-black p-4 dark:border-white">
-      <h2 className="text-xl font-extrabold">{props.title}</h2>
+    <section className="space-y-4 border border-neutral-200 p-4 dark:border-white/10 rounded-2xl bg-white dark:bg-white/[0.04]">
+      <h2 className="text-xl font-semibold font-display">{props.title}</h2>
       {props.children}
     </section>
   );
@@ -134,7 +135,7 @@ export function SettingsForm({ initial, rootDomain, customDomain }: SettingsForm
     setLogoError(null);
     setLogoStatus("processing");
     try {
-      const compressed = await imageCompression(file, {
+      const compressed = await imageCompression(await normalizeImageFile(file), {
         maxWidthOrHeight: 512,
         initialQuality: 0.9,
         fileType: "image/webp",
@@ -254,13 +255,13 @@ export function SettingsForm({ initial, rootDomain, customDomain }: SettingsForm
                 spellCheck={false}
                 className={`${INPUT_CLASS} min-w-0 border-r-0`}
               />
-              <span className="flex items-center border-2 border-black bg-neutral-100 px-3 text-sm font-bold dark:border-white dark:bg-neutral-900">
+              <span className="flex items-center border border-neutral-200 bg-neutral-100 px-3 text-sm font-semibold dark:border-white/10 dark:bg-neutral-900 rounded-xl">
                 .{rootDomain}
               </span>
             </div>
           </Field>
           {slugChanged ? (
-            <p role="status" aria-live="polite" className={`flex items-center gap-2 text-sm font-bold ${slugColor}`}>
+            <p role="status" aria-live="polite" className={`flex items-center gap-2 text-sm font-semibold ${slugColor}`}>
               {slugState.status === "checking" ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
               {slugState.status === "available" ? <Check className="h-4 w-4" /> : null}
               {slugState.status === "available" ? "¡Disponible! Al guardar, la dirección anterior deja de funcionar." : slugState.message}
@@ -294,9 +295,9 @@ export function SettingsForm({ initial, rootDomain, customDomain }: SettingsForm
 
         <Section title="Marca">
           <div className="space-y-2">
-            <span className="block text-sm font-semibold">Logo</span>
+            <span className="block text-sm font-medium">Logo</span>
             <div className="flex items-center gap-4">
-              <div className="flex h-24 w-24 shrink-0 items-center justify-center border-2 border-black bg-white dark:border-white">
+              <div className="flex h-24 w-24 shrink-0 items-center justify-center border border-neutral-200 bg-white dark:border-white/10 rounded-xl">
                 {displayedLogo ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={displayedLogo} alt="Logo" className="h-full w-full object-contain p-1" />
@@ -309,13 +310,13 @@ export function SettingsForm({ initial, rootDomain, customDomain }: SettingsForm
                   type="button"
                   disabled={logoBusy}
                   onClick={() => logoInputRef.current?.click()}
-                  className="flex h-12 items-center gap-2 border-2 border-black px-4 font-bold disabled:opacity-50 dark:border-white"
+                  className="flex h-12 items-center gap-2 border border-neutral-300 px-4 font-semibold disabled:opacity-50 dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
                 >
                   {logoBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
                   {logoStatus === "processing" ? "Optimizando…" : logoStatus === "uploading" ? `Subiendo ${logoProgress}%` : displayedLogo ? "Cambiar logo" : "Subir logo"}
                 </button>
                 {displayedLogo && !logoBusy ? (
-                  <button type="button" onClick={discardLogo} className="flex h-10 items-center gap-1 text-sm font-bold text-red-600">
+                  <button type="button" onClick={discardLogo} className="flex h-10 items-center gap-1 text-sm font-semibold text-red-600">
                     <X className="h-4 w-4" /> Quitar
                   </button>
                 ) : null}
@@ -324,7 +325,7 @@ export function SettingsForm({ initial, rootDomain, customDomain }: SettingsForm
             <input
               ref={logoInputRef}
               type="file"
-              accept="image/*"
+              accept="image/*,.heic,.heif"
               hidden
               onChange={(event) => {
                 const file = event.target.files?.[0];
@@ -332,12 +333,12 @@ export function SettingsForm({ initial, rootDomain, customDomain }: SettingsForm
                 event.target.value = "";
               }}
             />
-            {logoError ? <p role="alert" className="text-sm font-semibold text-red-600">{logoError}</p> : null}
-            {errors.logoKey ? <p className="text-sm font-semibold text-red-600">{errors.logoKey}</p> : null}
+            {logoError ? <p role="alert" className="text-sm font-medium text-red-600">{logoError}</p> : null}
+            {errors.logoKey ? <p className="text-sm font-medium text-red-600">{errors.logoKey}</p> : null}
           </div>
 
           <div className="space-y-3">
-            <span className="block text-sm font-semibold">Color principal</span>
+            <span className="block text-sm font-medium">Color principal</span>
             <ul className="grid grid-cols-5 gap-2 sm:grid-cols-10">
               {COLOR_PRESETS.map((preset) => (
                 <li key={preset}>
@@ -346,7 +347,7 @@ export function SettingsForm({ initial, rootDomain, customDomain }: SettingsForm
                     aria-label={`Color ${preset}`}
                     aria-pressed={color.toUpperCase() === preset}
                     onClick={() => setColor(preset)}
-                    className={`h-12 w-full border-2 ${color.toUpperCase() === preset ? "border-4 border-black dark:border-white" : "border-black/30 dark:border-white/30"}`}
+                    className={`h-12 w-full ${color.toUpperCase() === preset ? "border-2 border-neutral-900 dark:border-white" : "border border-neutral-200 dark:border-white/10"} rounded-xl`}
                     style={{ backgroundColor: preset }}
                   />
                 </li>
@@ -358,11 +359,11 @@ export function SettingsForm({ initial, rootDomain, customDomain }: SettingsForm
                 aria-label="Elegir otro color"
                 value={colorValid ? color : "#111111"}
                 onChange={(event) => setColor(event.target.value.toUpperCase())}
-                className="h-14 w-20 cursor-pointer border-2 border-black bg-transparent p-1 dark:border-white"
+                className="h-12 w-20 cursor-pointer border border-neutral-300 bg-white p-1 dark:border-white/20 dark:bg-white/5 rounded-xl"
               />
               <input value={color} onChange={(event) => setColor(event.target.value.trim())} maxLength={7} spellCheck={false} className={INPUT_CLASS} aria-label="Código de color" />
             </div>
-            {errors.primaryColor ? <p className="text-sm font-semibold text-red-600">{errors.primaryColor}</p> : null}
+            {errors.primaryColor ? <p className="text-sm font-medium text-red-600">{errors.primaryColor}</p> : null}
           </div>
         </Section>
 
@@ -372,11 +373,11 @@ export function SettingsForm({ initial, rootDomain, customDomain }: SettingsForm
             role="switch"
             aria-checked={notifyNewLeads}
             onClick={() => setNotifyNewLeads((value) => !value)}
-            className={`flex h-14 w-full items-center justify-between border-2 px-4 text-base font-bold ${
+            className={`flex h-12 w-full items-center justify-between border px-4 text-base font-semibold ${
               notifyNewLeads
-                ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
-                : "border-black/30 dark:border-white/30"
-            }`}
+                ? "border-transparent bg-neutral-900 text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
+                : "border-neutral-200 dark:border-white/10"
+            } rounded-xl`}
           >
             <span>Avisarme por email cuando entra una consulta</span>
             <span>{notifyNewLeads ? "Sí" : "No"}</span>
@@ -389,7 +390,7 @@ export function SettingsForm({ initial, rootDomain, customDomain }: SettingsForm
         </Section>
 
         {message ? (
-          <p role={message.type === "error" ? "alert" : "status"} className={`text-sm font-bold ${message.type === "error" ? "text-red-600" : "text-emerald-700 dark:text-emerald-400"}`}>
+          <p role={message.type === "error" ? "alert" : "status"} className={`text-sm font-semibold ${message.type === "error" ? "text-red-600" : "text-emerald-700 dark:text-emerald-400"}`}>
             {message.text}
           </p>
         ) : null}
@@ -398,7 +399,7 @@ export function SettingsForm({ initial, rootDomain, customDomain }: SettingsForm
           type="button"
           onClick={save}
           disabled={pending || logoBusy || !colorValid || (slugChanged && slugState.status === "checking")}
-          className="flex h-14 w-full items-center justify-center gap-2 border-2 border-black bg-black text-lg font-extrabold text-white disabled:opacity-50 dark:border-white dark:bg-white dark:text-black"
+          className="flex h-12 w-full items-center justify-center gap-2 border border-transparent bg-neutral-900 text-base font-semibold text-white disabled:opacity-50 dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
         >
           {pending ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
           Guardar cambios
@@ -406,7 +407,7 @@ export function SettingsForm({ initial, rootDomain, customDomain }: SettingsForm
       </div>
 
       <aside className="space-y-3" aria-label="Vista previa">
-        <p className="text-sm font-extrabold uppercase tracking-widest">Así se ve tu catálogo</p>
+        <p className="text-sm font-semibold uppercase tracking-wider">Así se ve tu catálogo</p>
         <CatalogPreview name={name} logoUrl={displayedLogo} color={color} city={city} hasWhatsapp={normalizedWhatsapp !== null} />
       </aside>
     </div>

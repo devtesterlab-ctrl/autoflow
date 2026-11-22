@@ -43,20 +43,20 @@ export default async function AdminTenantPage({ params }: { params: Promise<{ id
 
   return (
     <main className="mx-auto max-w-4xl space-y-6 px-4 py-6">
-      <Link href="/admin" className="inline-flex h-11 items-center gap-2 text-sm font-bold underline underline-offset-4">
+      <Link href="/admin" className="inline-flex h-11 items-center gap-2 text-sm font-semibold underline underline-offset-4">
         <ArrowLeft className="h-4 w-4" /> Volver al listado
       </Link>
 
       <header className="space-y-2">
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-3xl font-extrabold tracking-tight">{tenant.name}</h1>
-          <span className="border-2 border-black px-2 py-0.5 text-xs font-black dark:border-white">{limits.label.toUpperCase()}</span>
-          {!tenant.isActive ? <span className="bg-red-600 px-2 py-1 text-xs font-black text-white">SUSPENDIDA</span> : null}
-          {!tenant.onboardingCompleted ? <span className="bg-amber-400 px-2 py-1 text-xs font-black text-black">SIN CONFIGURAR</span> : null}
+          <h1 className="text-3xl font-semibold tracking-tight font-display">{tenant.name}</h1>
+          <span className="border border-neutral-200 px-2 py-0.5 text-xs font-bold dark:border-white/10 rounded-md">{limits.label.toUpperCase()}</span>
+          {!tenant.isActive ? <span className="bg-red-600 px-2 py-1 text-xs font-bold text-white rounded-md">SUSPENDIDA</span> : null}
+          {!tenant.onboardingCompleted ? <span className="bg-amber-400 px-2 py-1 text-xs font-bold text-black rounded-md">SIN CONFIGURAR</span> : null}
         </div>
         <p className="text-sm text-neutral-600 dark:text-neutral-400">
           Alta {dateFormatter.format(tenant.createdAt)} ·{" "}
-          <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="font-bold underline underline-offset-4">
+          <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="font-semibold underline underline-offset-4">
             {publicUrl.replace(/^https?:\/\//, "")}
           </a>
           {tenant.customDomain ? ` · dominio propio: ${tenant.customDomain}` : ""}
@@ -70,19 +70,19 @@ export default async function AdminTenantPage({ params }: { params: Promise<{ id
           { label: "Leads (30 días)", value: String(leads30) },
           { label: "Leads totales", value: String(leadsTotal) },
         ].map((item) => (
-          <div key={item.label} className="border-2 border-black p-4 dark:border-white">
-            <p className="text-3xl font-black">{item.value}</p>
-            <p className="text-sm font-bold text-neutral-600 dark:text-neutral-400">{item.label}</p>
+          <div key={item.label} className="border border-neutral-200 p-4 dark:border-white/10 rounded-2xl bg-white dark:bg-white/[0.04]">
+            <p className="text-3xl font-bold font-display">{item.value}</p>
+            <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-400">{item.label}</p>
           </div>
         ))}
       </section>
 
-      <section aria-label="Inventario" className="space-y-2 border-2 border-black p-4 dark:border-white">
-        <h2 className="text-sm font-extrabold uppercase tracking-widest">Inventario por estado</h2>
-        <ul className="flex flex-wrap gap-2 text-sm font-bold">
+      <section aria-label="Inventario" className="space-y-2 border border-neutral-200 p-4 dark:border-white/10 rounded-2xl bg-white dark:bg-white/[0.04]">
+        <h2 className="text-sm font-semibold uppercase tracking-wider">Inventario por estado</h2>
+        <ul className="flex flex-wrap gap-2 text-sm font-semibold">
           {vehicleGroups.length === 0 ? <li className="text-neutral-600 dark:text-neutral-400">Sin autos cargados.</li> : null}
           {vehicleGroups.map((group) => (
-            <li key={group.status} className="border-2 border-black/30 px-3 py-1 dark:border-white/30">
+            <li key={group.status} className="border border-neutral-200 px-3 py-1 dark:border-white/10 rounded-xl">
               {STATUS_LABELS[group.status as StatusValue]}: {group._count._all}
             </li>
           ))}
@@ -101,28 +101,28 @@ export default async function AdminTenantPage({ params }: { params: Promise<{ id
       />
 
       <section aria-label="Usuarios" className="space-y-3">
-        <h2 className="text-sm font-extrabold uppercase tracking-widest">Usuarios</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wider">Usuarios</h2>
         <ul className="space-y-2">
           {tenant.users.map((user) => (
-            <li key={user.id} className="flex flex-wrap items-center justify-between gap-2 border-2 border-black/20 p-3 dark:border-white/20">
+            <li key={user.id} className="flex flex-wrap items-center justify-between gap-2 border border-neutral-200 p-3 dark:border-white/10 rounded-2xl bg-white dark:bg-white/[0.04]">
               <div className="min-w-0">
-                <p className="truncate font-bold">{user.name}</p>
+                <p className="truncate font-semibold">{user.name}</p>
                 <p className="truncate text-sm text-neutral-600 dark:text-neutral-400">{user.email}</p>
               </div>
-              <span className="text-xs font-black">{user.role === "OWNER" ? "DUEÑO" : "VENDEDOR"}</span>
+              <span className="text-xs font-bold">{user.role === "OWNER" ? "DUEÑO" : "VENDEDOR"}</span>
             </li>
           ))}
         </ul>
       </section>
 
       <section aria-label="Registro de cambios" className="space-y-3">
-        <h2 className="text-sm font-extrabold uppercase tracking-widest">Registro de cambios</h2>
+        <h2 className="text-sm font-semibold uppercase tracking-wider">Registro de cambios</h2>
         {logs.length === 0 ? (
           <p className="text-sm text-neutral-600 dark:text-neutral-400">Sin cambios registrados.</p>
         ) : (
           <ul className="space-y-2">
             {logs.map((log) => (
-              <li key={log.id} className="border-2 border-black/20 p-3 text-sm dark:border-white/20">
+              <li key={log.id} className="border border-neutral-200 p-3 text-sm dark:border-white/10 rounded-2xl bg-white dark:bg-white/[0.04]">
                 <p className="font-bold">{log.action}</p>
                 <p className="text-neutral-600 dark:text-neutral-400">
                   {log.detail} · {log.adminEmail} · {dateTimeFormatter.format(log.createdAt)}

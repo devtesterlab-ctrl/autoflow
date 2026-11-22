@@ -17,7 +17,7 @@ interface TenantAdminActionsProps {
 type Message = { type: "ok" | "error"; text: string } | null;
 
 const INPUT_CLASS =
-  "h-12 w-full border-2 border-black bg-white px-3 text-base outline-none focus:ring-4 focus:ring-black/20 dark:border-white dark:bg-neutral-950";
+  "h-12 w-full border border-neutral-300 bg-white px-3 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl";
 
 export function TenantAdminActions({ tenantId, plan, isActive, customDomain, isSelf }: TenantAdminActionsProps) {
   const router = useRouter();
@@ -62,13 +62,13 @@ export function TenantAdminActions({ tenantId, plan, isActive, customDomain, isS
   }
 
   return (
-    <section className="space-y-6 border-2 border-black p-4 dark:border-white" aria-labelledby="admin-actions">
-      <h2 id="admin-actions" className="text-xl font-extrabold">
+    <section className="space-y-6 border border-neutral-200 p-4 dark:border-white/10 rounded-2xl bg-white dark:bg-white/[0.04]" aria-labelledby="admin-actions">
+      <h2 id="admin-actions" className="text-xl font-semibold font-display">
         Acciones
       </h2>
 
       <div className="space-y-2">
-        <label htmlFor="plan-select" className="text-sm font-semibold">
+        <label htmlFor="plan-select" className="text-sm font-medium">
           Plan
         </label>
         <div className="flex gap-2">
@@ -83,7 +83,7 @@ export function TenantAdminActions({ tenantId, plan, isActive, customDomain, isS
             type="button"
             onClick={changePlan}
             disabled={pending || selectedPlan === plan}
-            className="h-12 shrink-0 border-2 border-black bg-black px-5 font-bold text-white disabled:opacity-40 dark:border-white dark:bg-white dark:text-black"
+            className="h-12 shrink-0 border border-transparent bg-neutral-900 px-5 font-semibold text-white disabled:opacity-40 dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
           >
             Cambiar
           </button>
@@ -94,7 +94,7 @@ export function TenantAdminActions({ tenantId, plan, isActive, customDomain, isS
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="domain-input" className="text-sm font-semibold">
+        <label htmlFor="domain-input" className="text-sm font-medium">
           Dominio propio
         </label>
         <div className="flex gap-2">
@@ -112,7 +112,7 @@ export function TenantAdminActions({ tenantId, plan, isActive, customDomain, isS
             type="button"
             onClick={saveDomain}
             disabled={pending || !canUseCustomDomain(plan) || domain.trim() === (customDomain ?? "")}
-            className="h-12 shrink-0 border-2 border-black px-5 font-bold disabled:opacity-40 dark:border-white"
+            className="h-12 shrink-0 border border-neutral-300 px-5 font-semibold disabled:opacity-40 dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
           >
             Guardar
           </button>
@@ -122,14 +122,14 @@ export function TenantAdminActions({ tenantId, plan, isActive, customDomain, isS
         </p>
       </div>
 
-      <div className="space-y-2 border-t-2 border-black/20 pt-4 dark:border-white/20">
+      <div className="space-y-2 border-t border-neutral-200 pt-4 dark:border-white/10">
         <button
           type="button"
           onClick={toggleActive}
           disabled={pending || (isActive && isSelf)}
-          className={`flex h-12 items-center gap-2 border-2 px-5 font-bold disabled:opacity-40 ${
-            isActive ? "border-red-600 text-red-600" : "border-emerald-700 bg-emerald-600 text-white"
-          }`}
+          className={`flex h-12 items-center gap-2 border px-5 font-semibold disabled:opacity-40 ${
+            isActive ? "border-red-300 text-red-600 dark:border-red-800" : "border-emerald-700 bg-emerald-600 text-white"
+          } rounded-xl`}
         >
           {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           {isActive ? "Suspender agencia" : "Reactivar agencia"}
@@ -140,7 +140,7 @@ export function TenantAdminActions({ tenantId, plan, isActive, customDomain, isS
       </div>
 
       {message ? (
-        <p role={message.type === "error" ? "alert" : "status"} className={`text-sm font-bold ${message.type === "error" ? "text-red-600" : "text-emerald-700 dark:text-emerald-400"}`}>
+        <p role={message.type === "error" ? "alert" : "status"} className={`text-sm font-semibold ${message.type === "error" ? "text-red-600" : "text-emerald-700 dark:text-emerald-400"}`}>
           {message.text}
         </p>
       ) : null}

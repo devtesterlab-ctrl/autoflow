@@ -10,7 +10,7 @@ export default async function NewVehiclePage() {
 
   return (
     <main className="mx-auto max-w-2xl space-y-6 px-4 py-6">
-      <h1 className="text-3xl font-extrabold tracking-tight">Nuevo auto</h1>
+      <h1 className="text-3xl font-semibold tracking-tight font-display">Nuevo auto</h1>
       <PlanBanner usage={usage} agencyName={tenant.name} />
       <VehicleForm
         mode="create"

@@ -1,9 +1,46 @@
 @import "tailwindcss";
 
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
 :root {
   color-scheme: light dark;
 }
 
-body {
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Un resplandor muy suave arriba: da profundidad sin recargar */
+  body {
+    background-image: radial-gradient(60rem 26rem at 50% -8rem, rgb(15 23 42 / 0.05), transparent 70%);
+    background-repeat: no-repeat;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-image: radial-gradient(60rem 26rem at 50% -8rem, rgb(255 255 255 / 0.06), transparent 70%);
+    }
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  /* Tailwind 4 ya no pone cursor de mano en los botones */
+  button:not(:disabled),
+  [role="button"],
+  summary {
+    cursor: pointer;
+  }
+
+  ::selection {
+    background: rgb(99 102 241 / 0.25);
+  }
 }

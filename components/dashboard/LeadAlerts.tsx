@@ -82,11 +82,11 @@ export function LeadAlertsProvider({ initial, children }: { initial: LeadSummary
         <div
           role="status"
           aria-live="polite"
-          className="fixed inset-x-3 top-16 z-[70] mx-auto flex max-w-md items-start gap-3 border-2 border-black bg-white p-4 shadow-[6px_6px_0_0_#0a0a0a] dark:border-white dark:bg-neutral-950 dark:shadow-[6px_6px_0_0_#ffffff]"
+          className="fixed inset-x-3 top-16 z-[70] mx-auto flex max-w-md items-start gap-3 border border-neutral-200 bg-white/70 p-4 shadow-xl dark:border-white/10 dark:bg-neutral-950/60 dark:shadow-black/50 shadow-black/10 dark:shadow-xl backdrop-blur-xl rounded-2xl"
         >
           <Bell className="mt-0.5 h-5 w-5 shrink-0" />
           <div className="min-w-0 flex-1">
-            <p className="font-extrabold">Lead nuevo: {toast.clientName}</p>
+            <p className="font-semibold">Lead nuevo: {toast.clientName}</p>
             {toast.vehicleLabel ? (
               <p className="truncate text-sm text-neutral-600 dark:text-neutral-400">{toast.vehicleLabel}</p>
             ) : null}
@@ -96,7 +96,7 @@ export function LeadAlertsProvider({ initial, children }: { initial: LeadSummary
                 setToast(null);
                 router.refresh();
               }}
-              className="mt-2 inline-flex h-10 items-center border-2 border-black bg-black px-4 text-sm font-bold text-white dark:border-white dark:bg-white dark:text-black"
+              className="mt-2 inline-flex h-10 items-center border border-transparent bg-neutral-900 px-4 text-sm font-semibold text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
             >
               Ver leads
             </Link>
@@ -105,7 +105,7 @@ export function LeadAlertsProvider({ initial, children }: { initial: LeadSummary
             type="button"
             aria-label="Cerrar aviso"
             onClick={() => setToast(null)}
-            className="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-black dark:border-white"
+            className="flex h-9 w-9 shrink-0 items-center justify-center border border-neutral-200 dark:border-white/10 rounded-xl"
           >
             <X className="h-4 w-4" />
           </button>

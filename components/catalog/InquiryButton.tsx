@@ -64,29 +64,29 @@ export function InquiryButton({ domain, vehicleId, vehicleTitle, priceLabel, can
 
   if (!canContact) {
     return (
-      <p className="border-2 border-dashed border-black/40 p-4 text-sm font-semibold dark:border-white/40">
+      <p className="border border-dashed border-neutral-200 p-4 text-sm font-medium dark:border-white/10 rounded-2xl">
         Esta agencia todavía no habilitó el contacto por WhatsApp.
       </p>
     );
   }
 
   const mainButtonClass =
-    "flex items-center justify-center gap-2 border-2 text-base font-black active:translate-y-px";
+    "flex items-center justify-center gap-2 border text-base font-bold active:scale-[0.98] transition rounded-xl";
 
   return (
     <>
       <button
         type="button"
         onClick={handleMainClick}
-        className={`hidden h-14 w-full lg:flex ${mainButtonClass}`}
+        className={`hidden h-12 w-full lg:flex ${mainButtonClass}`}
         style={BRAND_BUTTON_STYLE}
       >
         <MessageCircle className="h-5 w-5" /> Consultar por este auto
       </button>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t-2 border-black bg-white p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] lg:hidden dark:border-white dark:bg-neutral-950">
-        <p className="shrink-0 text-lg font-black leading-tight">{priceLabel}</p>
-        <button type="button" onClick={handleMainClick} className={`h-14 flex-1 ${mainButtonClass}`} style={BRAND_BUTTON_STYLE}>
+      <div className="fixed inset-x-0 bottom-0 z-30 flex items-center gap-3 border-t border-neutral-200 bg-white/70 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] lg:hidden dark:border-white/10 dark:bg-neutral-950/60 backdrop-blur-xl">
+        <p className="shrink-0 text-lg font-bold leading-tight">{priceLabel}</p>
+        <button type="button" onClick={handleMainClick} className={`h-12 flex-1 ${mainButtonClass}`} style={BRAND_BUTTON_STYLE}>
           <MessageCircle className="h-5 w-5" /> Consultar
         </button>
       </div>
@@ -96,15 +96,15 @@ export function InquiryButton({ domain, vehicleId, vehicleTitle, priceLabel, can
           role="dialog"
           aria-modal="true"
           aria-labelledby="inquiry-title"
-          className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 sm:items-center"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center backdrop-blur-sm"
           onClick={(event) => {
             if (event.target === event.currentTarget) setOpen(false);
           }}
         >
-          <div className="w-full max-w-md space-y-5 border-2 border-black bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pb-5 dark:border-white dark:bg-neutral-950">
+          <div className="w-full max-w-md space-y-5 border border-neutral-200 bg-white/85 p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pb-5 dark:border-white/10 dark:bg-neutral-950/80 shadow-2xl rounded-t-3xl sm:rounded-3xl">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h2 id="inquiry-title" className="text-xl font-black">
+                <h2 id="inquiry-title" className="text-xl font-bold font-display">
                   ¿Cómo te llamás?
                 </h2>
                 <p className="text-sm text-neutral-600 dark:text-neutral-400">{vehicleTitle}</p>
@@ -113,20 +113,20 @@ export function InquiryButton({ domain, vehicleId, vehicleTitle, priceLabel, can
                 type="button"
                 aria-label="Cerrar"
                 onClick={() => setOpen(false)}
-                className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-black dark:border-white"
+                className="flex h-11 w-11 shrink-0 items-center justify-center border border-neutral-300 dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             <label className="block space-y-1">
-              <span className="text-sm font-bold">Tu nombre (opcional)</span>
+              <span className="text-sm font-semibold">Tu nombre (opcional)</span>
               <input
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 maxLength={60}
                 autoComplete="given-name"
-                className="h-14 w-full border-2 border-black bg-transparent px-4 text-base outline-none focus:ring-4 focus:ring-black/20 dark:border-white dark:focus:ring-white/30"
+                className="h-12 w-full border border-neutral-300 bg-white px-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl"
                 placeholder="Para que la agencia te atienda mejor"
               />
             </label>
@@ -143,7 +143,7 @@ export function InquiryButton({ domain, vehicleId, vehicleTitle, priceLabel, can
             />
 
             {error ? (
-              <p role="alert" className="text-sm font-bold text-red-600">
+              <p role="alert" className="text-sm font-semibold text-red-600">
                 {error}
               </p>
             ) : null}
@@ -153,7 +153,7 @@ export function InquiryButton({ domain, vehicleId, vehicleTitle, priceLabel, can
                 type="button"
                 disabled={pending || name.trim().length < 2}
                 onClick={() => submit(name.trim())}
-                className={`h-14 w-full disabled:opacity-40 ${mainButtonClass}`}
+                className={`h-12 w-full disabled:opacity-40 ${mainButtonClass}`}
                 style={BRAND_BUTTON_STYLE}
               >
                 {pending ? <Loader2 className="h-5 w-5 animate-spin" /> : <MessageCircle className="h-5 w-5" />}
@@ -163,7 +163,7 @@ export function InquiryButton({ domain, vehicleId, vehicleTitle, priceLabel, can
                 type="button"
                 disabled={pending}
                 onClick={() => submit("")}
-                className="h-14 w-full border-2 border-black text-base font-bold disabled:opacity-40 dark:border-white"
+                className="h-12 w-full border border-neutral-300 text-base font-semibold disabled:opacity-40 dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
               >
                 Ir directo a WhatsApp
               </button>

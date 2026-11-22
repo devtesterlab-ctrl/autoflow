@@ -52,9 +52,9 @@ function sortLeads(items: LeadDTO[], closed: boolean): LeadDTO[] {
 
 function Sheet(props: { title: string; body?: string; children: React.ReactNode }) {
   return (
-    <div role="dialog" aria-modal="true" aria-label={props.title} className="fixed inset-0 z-[60] flex items-end justify-center bg-black/60 sm:items-center">
-      <div className="w-full max-w-md space-y-4 border-2 border-black bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pb-5 dark:border-white dark:bg-neutral-950">
-        <h2 className="text-xl font-extrabold">{props.title}</h2>
+    <div role="dialog" aria-modal="true" aria-label={props.title} className="fixed inset-0 z-[60] flex items-end justify-center bg-black/40 sm:items-center backdrop-blur-sm">
+      <div className="w-full max-w-md space-y-4 border border-neutral-200 bg-white/85 p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pb-5 dark:border-white/10 dark:bg-neutral-950/80 shadow-2xl rounded-t-3xl sm:rounded-3xl">
+        <h2 className="text-xl font-semibold font-display">{props.title}</h2>
         {props.body ? <p className="text-neutral-700 dark:text-neutral-300">{props.body}</p> : null}
         <div className="space-y-3">{props.children}</div>
       </div>
@@ -187,25 +187,25 @@ export function LeadsBoard({ leads: initialLeads, vehicles, tenantName }: LeadsB
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-3xl font-extrabold tracking-tight">Leads</h1>
+        <h1 className="text-3xl font-semibold tracking-tight font-display">Leads</h1>
         <button
           type="button"
           onClick={() => setDrawer({ mode: "create" })}
-          className="flex h-14 items-center gap-2 border-2 border-black bg-black px-5 text-base font-extrabold text-white dark:border-white dark:bg-white dark:text-black"
+          className="flex h-12 items-center gap-2 border border-transparent bg-neutral-900 px-5 text-base font-semibold text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
         >
           <Plus className="h-5 w-5" /> Nuevo lead
         </button>
       </div>
 
       {overdueCount > 0 ? (
-        <p className="flex items-center gap-2 border-2 border-red-600 bg-red-50 p-3 text-sm font-bold text-red-700 dark:bg-red-950 dark:text-red-300">
+        <p className="flex items-center gap-2 border border-red-300 bg-red-50 p-3 text-sm font-semibold text-red-700 dark:bg-red-950 dark:text-red-300 dark:border-red-800 rounded-2xl">
           <AlertTriangle className="h-4 w-4 shrink-0" />
           {overdueCount === 1 ? "Tenés 1 seguimiento vencido." : `Tenés ${overdueCount} seguimientos vencidos.`}
         </p>
       ) : null}
 
       {message ? (
-        <p role="alert" className="border-2 border-red-600 bg-red-50 p-3 text-sm font-semibold text-red-700 dark:bg-red-950 dark:text-red-300">
+        <p role="alert" className="border border-red-300 bg-red-50 p-3 text-sm font-medium text-red-700 dark:bg-red-950 dark:text-red-300 dark:border-red-800 rounded-2xl">
           {message}
         </p>
       ) : null}
@@ -218,7 +218,7 @@ export function LeadsBoard({ leads: initialLeads, vehicles, tenantName }: LeadsB
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Buscar por nombre, teléfono o auto"
-          className="h-14 w-full border-2 border-black bg-transparent pl-12 pr-4 text-base outline-none focus:ring-4 focus:ring-black/20 dark:border-white dark:focus:ring-white/30"
+          className="h-12 w-full border border-neutral-300 bg-white pl-12 pr-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl"
         />
       </label>
 
@@ -233,11 +233,11 @@ export function LeadsBoard({ leads: initialLeads, vehicles, tenantName }: LeadsB
                   type="button"
                   aria-pressed={selected}
                   onClick={() => goToTab(index)}
-                  className={`relative h-11 whitespace-nowrap border-2 px-4 text-sm font-bold ${
+                  className={`relative h-11 whitespace-nowrap border px-4 text-sm font-semibold ${
                     selected
-                      ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
-                      : "border-black/30 dark:border-white/30"
-                  }`}
+                      ? "border-transparent bg-neutral-900 text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
+                      : "border-neutral-200 dark:border-white/10"
+                  } rounded-xl`}
                 >
                   {column.title} · {items.length}
                   {hasOverdue ? <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-600" /> : null}
@@ -269,17 +269,17 @@ export function LeadsBoard({ leads: initialLeads, vehicles, tenantName }: LeadsB
               event.preventDefault();
               handleDrop(column, event.dataTransfer.getData("text/plain"));
             }}
-            className={`w-full shrink-0 snap-center space-y-3 px-0.5 lg:min-h-[60dvh] lg:w-auto lg:min-w-0 lg:border-2 lg:border-dashed lg:p-2 ${
-              dragOver === column.key ? "lg:border-black dark:lg:border-white" : "lg:border-black/15 dark:lg:border-white/15"
+            className={`w-full shrink-0 snap-center space-y-3 px-0.5 lg:min-h-[60dvh] lg:w-auto lg:min-w-0 lg:rounded-2xl lg:border lg:border-dashed lg:p-2 ${
+              dragOver === column.key ? "lg:border-neutral-400 lg:bg-neutral-100/70 dark:lg:border-white/10 dark:lg:bg-white/5" : "lg:border-neutral-200 dark:lg:border-white/10"
             }`}
           >
             <header className="hidden items-center justify-between lg:flex">
-              <h2 className="text-sm font-extrabold uppercase tracking-widest">{column.title}</h2>
-              <span className="border-2 border-black px-2 text-sm font-bold dark:border-white">{items.length}</span>
+              <h2 className="text-sm font-semibold uppercase tracking-wider">{column.title}</h2>
+              <span className="border border-neutral-200 px-2 text-sm font-semibold dark:border-white/10 rounded-xl">{items.length}</span>
             </header>
 
             {items.length === 0 ? (
-              <p className="border-2 border-dashed border-black/30 p-6 text-center text-sm font-semibold text-neutral-500 dark:border-white/30">
+              <p className="border border-dashed border-neutral-200 p-6 text-center text-sm font-medium text-neutral-500 dark:border-white/10 rounded-2xl">
                 Sin leads en esta etapa
               </p>
             ) : (
@@ -338,7 +338,7 @@ export function LeadsBoard({ leads: initialLeads, vehicles, tenantName }: LeadsB
             type="button"
             disabled={busy}
             onClick={() => void confirmSold()}
-            className="h-14 w-full border-2 border-emerald-700 bg-emerald-600 text-lg font-extrabold text-white disabled:opacity-50"
+            className="h-12 w-full border border-emerald-700 bg-emerald-600 text-lg font-semibold text-white disabled:opacity-50 rounded-xl"
           >
             Sí, marcar como vendido
           </button>
@@ -346,7 +346,7 @@ export function LeadsBoard({ leads: initialLeads, vehicles, tenantName }: LeadsB
             type="button"
             disabled={busy}
             onClick={() => setPrompt(null)}
-            className="h-14 w-full border-2 border-black font-bold dark:border-white"
+            className="h-12 w-full border border-neutral-300 font-semibold dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
           >
             No, dejarlo como está
           </button>
@@ -361,7 +361,7 @@ export function LeadsBoard({ leads: initialLeads, vehicles, tenantName }: LeadsB
               setPrompt(null);
               void moveLead(promptLead.id, "WON");
             }}
-            className="h-14 w-full border-2 border-emerald-700 bg-emerald-600 text-lg font-extrabold text-white"
+            className="h-12 w-full border border-emerald-700 bg-emerald-600 text-lg font-semibold text-white rounded-xl"
           >
             Ganado
           </button>
@@ -371,14 +371,14 @@ export function LeadsBoard({ leads: initialLeads, vehicles, tenantName }: LeadsB
               setPrompt(null);
               void moveLead(promptLead.id, "LOST");
             }}
-            className="h-14 w-full border-2 border-black bg-black text-lg font-extrabold text-white dark:border-white dark:bg-white dark:text-black"
+            className="h-12 w-full border border-transparent bg-neutral-900 text-base font-semibold text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
           >
             Perdido
           </button>
           <button
             type="button"
             onClick={() => setPrompt(null)}
-            className="h-14 w-full border-2 border-black/40 font-bold dark:border-white/40"
+            className="h-12 w-full border border-neutral-300 font-semibold dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
           >
             Cancelar
           </button>

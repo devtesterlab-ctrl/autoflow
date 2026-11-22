@@ -82,7 +82,7 @@ async function registerAction(formData: FormData) {
 }
 
 const INPUT_CLASS =
-  "h-14 w-full border-2 border-black bg-transparent px-4 text-base outline-none focus:ring-4 focus:ring-black/20 dark:border-white dark:focus:ring-white/30";
+  "h-12 w-full border border-neutral-300 bg-white px-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl";
 
 export default async function RegisterPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const { error } = await searchParams;
@@ -91,30 +91,30 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-8 px-6 py-10">
       <header className="space-y-2">
-        <h1 className="text-3xl font-extrabold tracking-tight">Crear cuenta</h1>
+        <h1 className="text-3xl font-semibold tracking-tight font-display">Crear cuenta</h1>
         <p className="text-neutral-600 dark:text-neutral-400">Tu catálogo y tu CRM en menos de 2 minutos.</p>
       </header>
 
       <form action={registerAction} className="space-y-4">
         <label className="block space-y-1">
-          <span className="text-sm font-semibold">Tu nombre</span>
+          <span className="text-sm font-medium">Tu nombre</span>
           <input name="name" required autoComplete="name" className={INPUT_CLASS} />
         </label>
         <label className="block space-y-1">
-          <span className="text-sm font-semibold">Nombre de la agencia</span>
+          <span className="text-sm font-medium">Nombre de la agencia</span>
           <input name="agencyName" required autoComplete="organization" className={INPUT_CLASS} />
         </label>
         <label className="block space-y-1">
-          <span className="text-sm font-semibold">Email</span>
+          <span className="text-sm font-medium">Email</span>
           <input name="email" type="email" required autoComplete="email" inputMode="email" className={INPUT_CLASS} />
         </label>
         <label className="block space-y-1">
-          <span className="text-sm font-semibold">Contraseña</span>
+          <span className="text-sm font-medium">Contraseña</span>
           <input name="password" type="password" required minLength={8} autoComplete="new-password" className={INPUT_CLASS} />
         </label>
         {inviteRequired ? (
           <label className="block space-y-1">
-            <span className="text-sm font-semibold">Código de invitación</span>
+            <span className="text-sm font-medium">Código de invitación</span>
             <input name="inviteCode" required autoComplete="off" className={INPUT_CLASS} />
           </label>
         ) : null}
@@ -123,11 +123,11 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
           <input type="checkbox" name="acceptTerms" required className="mt-0.5 h-5 w-5 shrink-0" />
           <span>
             Acepto los{" "}
-            <a href="/terminos" target="_blank" className="font-bold underline underline-offset-4">
+            <a href="/terminos" target="_blank" className="font-semibold underline underline-offset-4">
               términos y condiciones
             </a>{" "}
             y la{" "}
-            <a href="/privacidad" target="_blank" className="font-bold underline underline-offset-4">
+            <a href="/privacidad" target="_blank" className="font-semibold underline underline-offset-4">
               política de privacidad
             </a>
             .
@@ -135,19 +135,19 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
         </label>
 
         {error ? (
-          <p role="alert" className="border-2 border-red-600 bg-red-50 p-3 text-sm font-semibold text-red-700 dark:bg-red-950 dark:text-red-300">
+          <p role="alert" className="border border-red-300 bg-red-50 p-3 text-sm font-medium text-red-700 dark:bg-red-950 dark:text-red-300 dark:border-red-800 rounded-2xl">
             {ERROR_MESSAGES[error] ?? ERROR_MESSAGES.server}
           </p>
         ) : null}
 
-        <button type="submit" className="h-14 w-full border-2 border-black bg-black text-lg font-bold text-white active:translate-y-px dark:border-white dark:bg-white dark:text-black">
+        <button type="submit" className="h-12 w-full border border-transparent bg-neutral-900 text-base font-semibold text-white active:scale-[0.98] dark:border-transparent dark:bg-white dark:text-neutral-900 transition hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl">
           Crear mi cuenta
         </button>
       </form>
 
       <p className="text-sm text-neutral-600 dark:text-neutral-400">
         ¿Ya tenés cuenta?{" "}
-        <a href="/login" className="font-bold underline underline-offset-4">
+        <a href="/login" className="font-semibold underline underline-offset-4">
           Ingresar
         </a>
       </p>

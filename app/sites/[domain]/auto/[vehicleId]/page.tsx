@@ -111,7 +111,7 @@ export default async function VehiclePage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
 
-      <Link href="/" className="mb-4 inline-flex h-11 items-center gap-2 text-sm font-bold underline underline-offset-4">
+      <Link href="/" className="mb-4 inline-flex h-11 items-center gap-2 text-sm font-semibold underline underline-offset-4">
         <ArrowLeft className="h-4 w-4" /> Volver al catálogo
       </Link>
 
@@ -127,19 +127,19 @@ export default async function VehiclePage({ params }: PageProps) {
         <aside className="space-y-5 lg:sticky lg:top-24 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
           <div className="space-y-3">
             {reserved ? (
-              <span className="inline-block bg-amber-400 px-3 py-1.5 text-xs font-black tracking-widest text-black">
+              <span className="inline-block bg-amber-400 px-3 py-1.5 text-xs font-bold tracking-wider text-black rounded-md">
                 RESERVADO
               </span>
             ) : null}
-            <h1 className="text-3xl font-black leading-tight tracking-tight">{title}</h1>
-            <ul className="flex flex-wrap gap-2 text-sm font-bold">
-              <li className="border-2 border-black px-3 py-1 dark:border-white">{vehicle.year}</li>
-              <li className="border-2 border-black px-3 py-1 dark:border-white">{formatKm(vehicle.mileage)}</li>
-              <li className="border-2 border-black px-3 py-1 dark:border-white">
+            <h1 className="text-3xl font-bold leading-tight tracking-tight font-display">{title}</h1>
+            <ul className="flex flex-wrap gap-2 text-sm font-semibold">
+              <li className="border border-neutral-200 px-3 py-1 dark:border-white/10 rounded-xl">{vehicle.year}</li>
+              <li className="border border-neutral-200 px-3 py-1 dark:border-white/10 rounded-xl">{formatKm(vehicle.mileage)}</li>
+              <li className="border border-neutral-200 px-3 py-1 dark:border-white/10 rounded-xl">
                 {TRANSMISSION_LABELS[vehicle.transmission]}
               </li>
             </ul>
-            <p className="text-4xl font-black tracking-tight">{priceLabel}</p>
+            <p className="text-4xl font-bold tracking-tight font-display">{priceLabel}</p>
           </div>
 
           <InquiryButton
@@ -155,16 +155,16 @@ export default async function VehiclePage({ params }: PageProps) {
 
         <div className="min-w-0 space-y-8 lg:col-start-1 lg:row-start-2">
           <section aria-labelledby="specs-title" className="space-y-3">
-            <h2 id="specs-title" className="text-xl font-black">
+            <h2 id="specs-title" className="text-xl font-bold font-display">
               Ficha técnica
             </h2>
-            <dl className="grid grid-cols-2 gap-px border-2 border-black bg-black dark:border-white dark:bg-white">
+            <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-200 dark:border-white/10 dark:bg-white/10">
               {specs.map((spec) => (
                 <div key={spec.label} className="bg-white p-4 dark:bg-neutral-950">
-                  <dt className="text-xs font-bold uppercase tracking-wide text-neutral-600 dark:text-neutral-400">
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-neutral-600 dark:text-neutral-400">
                     {spec.label}
                   </dt>
-                  <dd className="text-base font-black">{spec.value}</dd>
+                  <dd className="text-base font-bold">{spec.value}</dd>
                 </div>
               ))}
             </dl>
@@ -172,14 +172,14 @@ export default async function VehiclePage({ params }: PageProps) {
 
           {vehicle.features.length > 0 ? (
             <section aria-labelledby="features-title" className="space-y-3">
-              <h2 id="features-title" className="text-xl font-black">
+              <h2 id="features-title" className="text-xl font-bold font-display">
                 Equipamiento
               </h2>
               <ul className="flex flex-wrap gap-2">
                 {vehicle.features.map((feature) => (
                   <li
                     key={feature}
-                    className="flex items-center gap-2 border-2 px-3 py-2 text-sm font-bold"
+                    className="flex items-center gap-2 border px-3 py-2 text-sm font-semibold rounded-xl"
                     style={{ borderColor: "var(--brand-primary)" }}
                   >
                     <Check className="h-4 w-4" /> {feature}
@@ -191,7 +191,7 @@ export default async function VehiclePage({ params }: PageProps) {
 
           {vehicle.description ? (
             <section aria-labelledby="description-title" className="space-y-3">
-              <h2 id="description-title" className="text-xl font-black">
+              <h2 id="description-title" className="text-xl font-bold font-display">
                 Descripción
               </h2>
               <p className="whitespace-pre-line leading-relaxed">{vehicle.description}</p>

@@ -7,6 +7,7 @@ import { Check, ImagePlus, Loader2, X } from "lucide-react";
 import { checkSlugAvailability, completeOnboarding, type SlugStatus } from "@/app/onboarding/actions";
 import { CatalogPreview } from "@/components/onboarding/CatalogPreview";
 import { slugify, slugSchema } from "@/lib/slug";
+import { normalizeImageFile } from "@/lib/image-input";
 import { putWithProgress } from "@/lib/upload-client";
 import { MAX_LOGO_BYTES, type PresignedResponse } from "@/lib/validators/upload";
 import {
@@ -38,15 +39,15 @@ const COLOR_PRESETS = ["#E11D48", "#EA580C", "#CA8A04", "#16A34A", "#0F766E", "#
 const HEX_COLOR = /^#[0-9a-fA-F]{6}$/;
 
 const INPUT_CLASS =
-  "h-14 w-full border-2 border-black bg-transparent px-4 text-base outline-none focus:ring-4 focus:ring-black/20 dark:border-white dark:focus:ring-white/30";
+  "h-12 w-full border border-neutral-300 bg-white px-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl";
 
 function Field(props: { label: string; hint?: string; error?: string; children: React.ReactNode }) {
   return (
     <label className="block space-y-1">
-      <span className="text-sm font-semibold">{props.label}</span>
+      <span className="text-sm font-medium">{props.label}</span>
       {props.children}
       {props.error ? (
-        <span className="block text-sm font-semibold text-red-600">{props.error}</span>
+        <span className="block text-sm font-medium text-red-600">{props.error}</span>
       ) : props.hint ? (
         <span className="block text-sm text-neutral-600 dark:text-neutral-400">{props.hint}</span>
       ) : null}
@@ -140,7 +141,7 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
     setLogoError(null);
     setLogoStatus("processing");
     try {
-      const compressed = await imageCompression(file, {
+      const compressed = await imageCompression(await normalizeImageFile(file), {
         maxWidthOrHeight: 512,
         initialQuality: 0.9,
         fileType: "image/webp",
@@ -226,13 +227,13 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
             <li
               key={label}
               aria-current={index === step ? "step" : undefined}
-              className={`flex h-12 items-center justify-center gap-2 border-2 text-sm font-bold ${
+              className={`flex h-12 items-center justify-center gap-2 border text-sm font-semibold ${
                 index === step
-                  ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
+                  ? "border-transparent bg-neutral-900 text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
                   : index < step
-                    ? "border-black dark:border-white"
-                    : "border-black/30 text-neutral-500 dark:border-white/30"
-              }`}
+                    ? "border-neutral-200 dark:border-white/10"
+                    : "border-neutral-200 text-neutral-500 dark:border-white/10"
+              } rounded-xl`}
             >
               {index < step ? <Check className="h-4 w-4" /> : <span>{index + 1}</span>}
               <span className="hidden sm:inline">{label}</span>
@@ -242,7 +243,7 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
 
         {step === 0 ? (
           <section className="space-y-5" aria-labelledby="step-0">
-            <h2 id="step-0" className="text-2xl font-extrabold">
+            <h2 id="step-0" className="text-2xl font-semibold font-display">
               ¿Cómo se llama tu agencia?
             </h2>
             <Field label="Nombre de la agencia" error={errors.name}>
@@ -273,12 +274,12 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
                   className={`${INPUT_CLASS} min-w-0 border-r-0`}
                   placeholder="miagencia"
                 />
-                <span className="flex items-center border-2 border-black bg-neutral-100 px-3 text-sm font-bold dark:border-white dark:bg-neutral-900">
+                <span className="flex items-center border border-neutral-200 bg-neutral-100 px-3 text-sm font-semibold dark:border-white/10 dark:bg-neutral-900 rounded-xl">
                   .{rootDomain}
                 </span>
               </div>
             </Field>
-            <p role="status" aria-live="polite" className={`flex items-center gap-2 text-sm font-bold ${slugColor}`}>
+            <p role="status" aria-live="polite" className={`flex items-center gap-2 text-sm font-semibold ${slugColor}`}>
               {slugState.status === "checking" ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
               {slugState.status === "available" ? <Check className="h-4 w-4" /> : null}
               {slugState.message || `Tu catálogo va a estar en ${slug || "miagencia"}.${rootDomain}`}
@@ -288,7 +289,7 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
 
         {step === 1 ? (
           <section className="space-y-5" aria-labelledby="step-1">
-            <h2 id="step-1" className="text-2xl font-extrabold">
+            <h2 id="step-1" className="text-2xl font-semibold font-display">
               ¿Dónde te contactan los clientes?
             </h2>
             <Field
@@ -327,14 +328,14 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
 
         {step === 2 ? (
           <section className="space-y-6" aria-labelledby="step-2">
-            <h2 id="step-2" className="text-2xl font-extrabold">
+            <h2 id="step-2" className="text-2xl font-semibold font-display">
               Poné tu marca
             </h2>
 
             <div className="space-y-2">
-              <span className="block text-sm font-semibold">Logo (opcional)</span>
+              <span className="block text-sm font-medium">Logo (opcional)</span>
               <div className="flex items-center gap-4">
-                <div className="flex h-24 w-24 shrink-0 items-center justify-center border-2 border-black bg-white dark:border-white">
+                <div className="flex h-24 w-24 shrink-0 items-center justify-center border border-neutral-200 bg-white dark:border-white/10 rounded-xl">
                   {logoPreview ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={logoPreview} alt="Logo cargado" className="h-full w-full object-contain p-1" />
@@ -347,13 +348,13 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
                     type="button"
                     disabled={logoBusy}
                     onClick={() => logoInputRef.current?.click()}
-                    className="flex h-12 items-center gap-2 border-2 border-black px-4 font-bold disabled:opacity-50 dark:border-white"
+                    className="flex h-12 items-center gap-2 border border-neutral-300 px-4 font-semibold disabled:opacity-50 dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
                   >
                     {logoBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
                     {logoStatus === "processing" ? "Optimizando…" : logoStatus === "uploading" ? `Subiendo ${logoProgress}%` : logoPreview ? "Cambiar logo" : "Subir logo"}
                   </button>
                   {logoPreview && !logoBusy ? (
-                    <button type="button" onClick={removeLogo} className="flex h-10 items-center gap-1 text-sm font-bold text-red-600">
+                    <button type="button" onClick={removeLogo} className="flex h-10 items-center gap-1 text-sm font-semibold text-red-600">
                       <X className="h-4 w-4" /> Quitar
                     </button>
                   ) : null}
@@ -362,7 +363,7 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
               <input
                 ref={logoInputRef}
                 type="file"
-                accept="image/*"
+                accept="image/*,.heic,.heif"
                 hidden
                 onChange={(event) => {
                   const file = event.target.files?.[0];
@@ -370,11 +371,11 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
                   event.target.value = "";
                 }}
               />
-              {logoError ? <p role="alert" className="text-sm font-semibold text-red-600">{logoError}</p> : null}
+              {logoError ? <p role="alert" className="text-sm font-medium text-red-600">{logoError}</p> : null}
             </div>
 
             <div className="space-y-3">
-              <span className="block text-sm font-semibold">Color principal</span>
+              <span className="block text-sm font-medium">Color principal</span>
               <ul className="grid grid-cols-5 gap-2 sm:grid-cols-10">
                 {COLOR_PRESETS.map((preset) => (
                   <li key={preset}>
@@ -383,7 +384,7 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
                       aria-label={`Color ${preset}`}
                       aria-pressed={color.toUpperCase() === preset}
                       onClick={() => setColor(preset)}
-                      className={`h-12 w-full border-2 ${color.toUpperCase() === preset ? "border-4 border-black dark:border-white" : "border-black/30 dark:border-white/30"}`}
+                      className={`h-12 w-full ${color.toUpperCase() === preset ? "border-2 border-neutral-900 dark:border-white" : "border border-neutral-200 dark:border-white/10"} rounded-xl`}
                       style={{ backgroundColor: preset }}
                     />
                   </li>
@@ -395,7 +396,7 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
                   aria-label="Elegir otro color"
                   value={colorValid ? color : "#111111"}
                   onChange={(event) => setColor(event.target.value.toUpperCase())}
-                  className="h-14 w-20 cursor-pointer border-2 border-black bg-transparent p-1 dark:border-white"
+                  className="h-12 w-20 cursor-pointer border border-neutral-300 bg-white p-1 dark:border-white/20 dark:bg-white/5 rounded-xl"
                 />
                 <input
                   value={color}
@@ -408,13 +409,13 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
                   aria-label="Código de color"
                 />
               </div>
-              {errors.primaryColor ? <p className="text-sm font-semibold text-red-600">{errors.primaryColor}</p> : null}
+              {errors.primaryColor ? <p className="text-sm font-medium text-red-600">{errors.primaryColor}</p> : null}
             </div>
           </section>
         ) : null}
 
         {formError ? (
-          <p role="alert" className="text-sm font-bold text-red-600">
+          <p role="alert" className="text-sm font-semibold text-red-600">
             {formError}
           </p>
         ) : null}
@@ -427,7 +428,7 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
               setErrors({});
               setStep((current) => Math.max(0, current - 1));
             }}
-            className="h-14 border-2 border-black font-bold disabled:opacity-30 dark:border-white"
+            className="h-12 border border-neutral-300 font-semibold disabled:opacity-30 dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
           >
             Atrás
           </button>
@@ -436,7 +437,7 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
               type="button"
               onClick={goNext}
               disabled={step === 0 && slugState.status === "checking"}
-              className="h-14 border-2 border-black bg-black text-lg font-extrabold text-white disabled:opacity-50 dark:border-white dark:bg-white dark:text-black"
+              className="h-12 border border-transparent bg-neutral-900 text-base font-semibold text-white disabled:opacity-50 dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
             >
               Siguiente
             </button>
@@ -445,7 +446,7 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
               type="button"
               onClick={finish}
               disabled={pending || logoBusy || !colorValid}
-              className="flex h-14 items-center justify-center gap-2 border-2 border-black bg-black text-lg font-extrabold text-white disabled:opacity-50 dark:border-white dark:bg-white dark:text-black"
+              className="flex h-12 items-center justify-center gap-2 border border-transparent bg-neutral-900 text-base font-semibold text-white disabled:opacity-50 dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
             >
               {pending ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
               Publicar mi catálogo
@@ -455,7 +456,7 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
       </div>
 
       <aside className={`space-y-3 ${step === 2 ? "block" : "hidden lg:block"}`} aria-label="Vista previa">
-        <p className="text-sm font-extrabold uppercase tracking-widest">Así se ve tu catálogo</p>
+        <p className="text-sm font-semibold uppercase tracking-wider">Así se ve tu catálogo</p>
         <CatalogPreview name={name} logoUrl={logoPreview} color={color} city={city} hasWhatsapp={normalizedWhatsapp !== null} />
       </aside>
     </div>

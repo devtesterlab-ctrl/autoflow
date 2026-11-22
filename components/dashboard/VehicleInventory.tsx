@@ -111,12 +111,12 @@ export function VehicleInventory({
             onChange={(event) => setQuery(event.target.value)}
             type="search"
             placeholder="Buscar marca, modelo o año"
-            className="h-14 w-full border-2 border-black bg-transparent pl-12 pr-4 text-base outline-none focus:ring-4 focus:ring-black/20 dark:border-white dark:focus:ring-white/30"
+            className="h-12 w-full border border-neutral-300 bg-white pl-12 pr-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl"
           />
         </label>
         <Link
           href="/dashboard/vehicles/new"
-          className="flex h-14 shrink-0 items-center justify-center gap-2 border-2 border-black bg-black px-5 text-base font-extrabold text-white dark:border-white dark:bg-white dark:text-black"
+          className="flex h-12 shrink-0 items-center justify-center gap-2 border border-transparent bg-neutral-900 px-5 text-base font-semibold text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
         >
           <Plus className="h-5 w-5" />
           <span className="hidden sm:inline">Nuevo auto</span>
@@ -133,11 +133,11 @@ export function VehicleInventory({
                   type="button"
                   aria-pressed={selected}
                   onClick={() => setFilter(value)}
-                  className={`h-11 whitespace-nowrap border-2 px-4 text-sm font-bold ${
+                  className={`h-11 whitespace-nowrap border px-4 text-sm font-semibold ${
                     selected
-                      ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
-                      : "border-black/30 dark:border-white/30"
-                  }`}
+                      ? "border-transparent bg-neutral-900 text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
+                      : "border-neutral-200 dark:border-white/10"
+                  } rounded-xl`}
                 >
                   {value === "ALL" ? "Todos" : STATUS_LABELS[value]} · {counts[value]}
                 </button>
@@ -148,20 +148,20 @@ export function VehicleInventory({
       </div>
 
       {message ? (
-        <p role="alert" className="border-2 border-red-600 bg-red-50 p-3 text-sm font-semibold text-red-700 dark:bg-red-950 dark:text-red-300">
+        <p role="alert" className="border border-red-300 bg-red-50 p-3 text-sm font-medium text-red-700 dark:bg-red-950 dark:text-red-300 dark:border-red-800 rounded-2xl">
           {message}
         </p>
       ) : null}
 
       {visible.length === 0 ? (
-        <div className="border-2 border-dashed border-black/40 p-10 text-center dark:border-white/40">
-          <p className="text-lg font-bold">
+        <div className="border border-dashed border-neutral-200 p-10 text-center dark:border-white/10 rounded-2xl">
+          <p className="text-lg font-semibold">
             {items.length === 0 ? "Todavía no cargaste autos." : "No hay autos con ese filtro."}
           </p>
           {items.length === 0 ? (
             <Link
               href="/dashboard/vehicles/new"
-              className="mt-4 inline-flex h-14 items-center border-2 border-black bg-black px-6 font-extrabold text-white dark:border-white dark:bg-white dark:text-black"
+              className="mt-4 inline-flex h-12 items-center border border-transparent bg-neutral-900 px-6 font-semibold text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
             >
               Cargar mi primer auto
             </Link>
@@ -170,36 +170,36 @@ export function VehicleInventory({
       ) : (
         <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {visible.map((item) => (
-            <li key={item.id} className="flex flex-col border-2 border-black dark:border-white">
+            <li key={item.id} className="flex flex-col overflow-hidden border border-neutral-200 dark:border-white/10 rounded-2xl shadow-sm">
               <div className="relative aspect-[4/3] bg-neutral-200 dark:bg-neutral-800">
                 {item.coverUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={item.coverUrl} alt={`${item.brand} ${item.model}`} loading="lazy" className="h-full w-full object-cover" />
                 ) : (
-                  <div className="flex h-full items-center justify-center text-sm font-semibold text-neutral-500">Sin fotos</div>
+                  <div className="flex h-full items-center justify-center text-sm font-medium text-neutral-500">Sin fotos</div>
                 )}
-                <span className={`absolute left-2 top-2 px-2 py-1 text-xs font-extrabold uppercase ${STATUS_BADGE_CLASSES[item.status]}`}>
+                <span className={`absolute left-2 top-2 px-2 py-1 text-xs font-semibold uppercase ${STATUS_BADGE_CLASSES[item.status]}`}>
                   {STATUS_LABELS[item.status]}
                 </span>
                 {item.isFeatured ? (
-                  <span className="absolute right-2 top-2 bg-black px-2 py-1 text-xs font-extrabold text-white dark:bg-white dark:text-black">
+                  <span className="absolute right-2 top-2 bg-neutral-900 px-2 py-1 text-xs font-semibold text-white dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-md">
                     ★ DESTACADO
                   </span>
                 ) : null}
               </div>
 
               <div className="flex-1 space-y-1 p-4">
-                <p className="text-lg font-extrabold leading-tight">
+                <p className="text-lg font-semibold leading-tight">
                   {item.brand} {item.model}
                 </p>
                 {item.version ? <p className="text-sm text-neutral-600 dark:text-neutral-400">{item.version}</p> : null}
-                <p className="text-sm font-semibold">
+                <p className="text-sm font-medium">
                   {item.year} · {formatKm(item.mileage)}
                 </p>
-                <p className="pt-1 text-xl font-extrabold">{formatPrice(item.price, item.currency)}</p>
+                <p className="pt-1 text-xl font-semibold font-display">{formatPrice(item.price, item.currency)}</p>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 border-t-2 border-black p-3 dark:border-white">
+              <div className="grid grid-cols-2 gap-2 border-t border-neutral-200 p-3 dark:border-white/10">
                 {STATUS_VALUES.map((status) => {
                   const active = item.status === status;
                   return (
@@ -208,9 +208,9 @@ export function VehicleInventory({
                       type="button"
                       aria-pressed={active}
                       onClick={() => void changeStatus(item.id, status)}
-                      className={`h-11 border-2 px-2 text-sm font-bold active:translate-y-px ${
-                        active ? STATUS_ACTIVE_CLASSES[status] : "border-black/30 dark:border-white/30"
-                      }`}
+                      className={`h-11 border px-2 text-sm font-semibold active:scale-[0.98] ${
+                        active ? STATUS_ACTIVE_CLASSES[status] : "border-neutral-200 dark:border-white/10"
+                      } transition rounded-xl`}
                     >
                       {STATUS_LABELS[status]}
                     </button>
@@ -218,24 +218,24 @@ export function VehicleInventory({
                 })}
               </div>
 
-              <div className="grid grid-cols-3 border-t-2 border-black dark:border-white">
+              <div className="grid grid-cols-3 border-t border-neutral-200 dark:border-white/10">
                 <Link
                   href={`/dashboard/vehicles/${item.id}/edit`}
-                  className="flex h-12 items-center justify-center gap-2 border-r-2 border-black text-sm font-bold dark:border-white"
+                  className="flex h-12 items-center justify-center gap-2 border-r border-neutral-300 text-sm font-semibold dark:border-white/20"
                 >
                   <Pencil className="h-4 w-4" /> Editar
                 </Link>
                 <button
                   type="button"
                   onClick={() => setStoryVehicle(item)}
-                  className="flex h-12 items-center justify-center gap-2 border-r-2 border-black text-sm font-bold dark:border-white"
+                  className="flex h-12 items-center justify-center gap-2 border-r border-neutral-300 text-sm font-semibold dark:border-white/20"
                 >
                   <Share2 className="h-4 w-4" /> Historia
                 </button>
                 <button
                   type="button"
                   onClick={() => void removeVehicle(item)}
-                  className="flex h-12 items-center justify-center gap-2 text-sm font-bold text-red-600"
+                  className="flex h-12 items-center justify-center gap-2 text-sm font-semibold text-red-600"
                 >
                   <Trash2 className="h-4 w-4" /> Eliminar
                 </button>

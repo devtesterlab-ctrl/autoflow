@@ -33,8 +33,8 @@ export function DashboardNav({ variant, showAdmin }: { variant: "top" | "bottom"
         const indicator =
           (badge ?? 0) > 0 || alert ? (
             <span
-              className={`absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center px-1 text-[11px] font-black ${
-                alert ? "bg-red-600 text-white" : "bg-black text-white dark:bg-white dark:text-black"
+              className={`absolute -right-2 -top-2 flex h-5 min-w-5 items-center justify-center px-1 text-[11px] font-bold ${
+                alert ? "bg-red-600 text-white" : "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
               }`}
               aria-label={`${badge ?? 0} nuevos${alert ? ", con seguimientos vencidos" : ""}`}
             >
@@ -48,11 +48,11 @@ export function DashboardNav({ variant, showAdmin }: { variant: "top" | "bottom"
               key={href}
               href={href}
               aria-current={active ? "page" : undefined}
-              className={`relative flex h-10 items-center gap-2 border-2 px-4 text-sm font-bold ${
+              className={`relative flex h-10 items-center gap-2 border px-4 text-sm font-semibold ${
                 active
-                  ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
+                  ? "border-transparent bg-neutral-900 text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
                   : "border-transparent"
-              }`}
+              } rounded-xl`}
             >
               <Icon className="h-4 w-4" /> {label}
               {indicator}
@@ -64,8 +64,8 @@ export function DashboardNav({ variant, showAdmin }: { variant: "top" | "bottom"
             key={href}
             href={href}
             aria-current={active ? "page" : undefined}
-            className={`flex flex-col items-center justify-center gap-1 text-[11px] font-bold ${
-              active ? "bg-black text-white dark:bg-white dark:text-black" : ""
+            className={`flex flex-col items-center justify-center gap-1 text-[11px] font-semibold ${
+              active ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors" : ""
             }`}
           >
             <span className="relative">

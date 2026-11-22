@@ -43,7 +43,7 @@ function compareByPrice(a: PublicVehicle, b: PublicVehicle): number {
 }
 
 const SELECT_CLASS =
-  "h-12 w-full border-2 border-black bg-white px-3 text-base dark:border-white dark:bg-neutral-950";
+  "h-12 w-full border border-neutral-300 bg-white px-3 text-base dark:border-white/20 dark:bg-white/5 rounded-xl";
 
 function Chips<T extends string>(props: {
   label: string;
@@ -53,7 +53,7 @@ function Chips<T extends string>(props: {
 }) {
   return (
     <div role="group" aria-label={props.label} className="space-y-2">
-      <span className="block text-sm font-bold">{props.label}</span>
+      <span className="block text-sm font-semibold">{props.label}</span>
       <div className="flex flex-wrap gap-2">
         {props.options.map((option) => {
           const selected = option.value === props.value;
@@ -63,7 +63,7 @@ function Chips<T extends string>(props: {
               type="button"
               aria-pressed={selected}
               onClick={() => props.onChange(option.value)}
-              className="h-11 border-2 border-black px-4 text-sm font-bold dark:border-white"
+              className="h-11 border border-neutral-300 px-4 text-sm font-semibold dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
               style={selected ? BRAND_BUTTON_STYLE : undefined}
             >
               {option.label}
@@ -164,7 +164,7 @@ export function CatalogBrowser({ vehicles }: { vehicles: PublicVehicle[] }) {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Buscar marca, modelo o año"
-            className="h-14 w-full border-2 border-black bg-transparent pl-12 pr-4 text-base outline-none focus:ring-4 focus:ring-black/20 dark:border-white dark:focus:ring-white/30"
+            className="h-12 w-full border border-neutral-300 bg-white pl-12 pr-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl"
           />
         </label>
 
@@ -173,7 +173,7 @@ export function CatalogBrowser({ vehicles }: { vehicles: PublicVehicle[] }) {
             type="button"
             aria-expanded={showFilters}
             onClick={() => setShowFilters((value) => !value)}
-            className="flex h-12 items-center gap-2 border-2 border-black px-4 text-sm font-bold dark:border-white"
+            className="flex h-12 items-center gap-2 border border-neutral-300 px-4 text-sm font-semibold dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
             style={showFilters || activeFilters > 0 ? BRAND_BUTTON_STYLE : undefined}
           >
             <SlidersHorizontal className="h-4 w-4" />
@@ -192,9 +192,9 @@ export function CatalogBrowser({ vehicles }: { vehicles: PublicVehicle[] }) {
         </div>
 
         {showFilters ? (
-          <div className="space-y-5 border-2 border-black p-4 dark:border-white">
+          <div className="space-y-5 border border-neutral-200 p-4 dark:border-white/10 rounded-2xl bg-white dark:bg-white/[0.04]">
             <label className="block space-y-2">
-              <span className="block text-sm font-bold">Marca</span>
+              <span className="block text-sm font-semibold">Marca</span>
               <select value={brand} onChange={(event) => setBrand(event.target.value)} className={SELECT_CLASS}>
                 <option value="">Todas</option>
                 {brands.map((item) => (
@@ -207,7 +207,7 @@ export function CatalogBrowser({ vehicles }: { vehicles: PublicVehicle[] }) {
 
             <div className="grid grid-cols-2 gap-3">
               <label className="block space-y-2">
-                <span className="block text-sm font-bold">Año desde</span>
+                <span className="block text-sm font-semibold">Año desde</span>
                 <select value={yearFrom} onChange={(event) => setYearFrom(event.target.value)} className={SELECT_CLASS}>
                   <option value="">Cualquiera</option>
                   {years.map((year) => (
@@ -218,7 +218,7 @@ export function CatalogBrowser({ vehicles }: { vehicles: PublicVehicle[] }) {
                 </select>
               </label>
               <label className="block space-y-2">
-                <span className="block text-sm font-bold">Año hasta</span>
+                <span className="block text-sm font-semibold">Año hasta</span>
                 <select value={yearTo} onChange={(event) => setYearTo(event.target.value)} className={SELECT_CLASS}>
                   <option value="">Cualquiera</option>
                   {years.map((year) => (
@@ -239,7 +239,7 @@ export function CatalogBrowser({ vehicles }: { vehicles: PublicVehicle[] }) {
               <button
                 type="button"
                 onClick={resetFilters}
-                className="flex h-11 items-center gap-2 text-sm font-bold underline underline-offset-4"
+                className="flex h-11 items-center gap-2 text-sm font-semibold underline underline-offset-4"
               >
                 <X className="h-4 w-4" /> Limpiar filtros
               </button>
@@ -248,20 +248,20 @@ export function CatalogBrowser({ vehicles }: { vehicles: PublicVehicle[] }) {
         ) : null}
       </div>
 
-      <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-400" aria-live="polite">
+      <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400" aria-live="polite">
         {visible.length} {visible.length === 1 ? "auto" : "autos"}
       </p>
 
       {visible.length === 0 ? (
-        <div className="border-2 border-dashed border-black/40 p-10 text-center dark:border-white/40">
-          <p className="text-lg font-bold">
+        <div className="border border-dashed border-neutral-200 p-10 text-center dark:border-white/10 rounded-2xl">
+          <p className="text-lg font-semibold">
             {vehicles.length === 0 ? "Pronto vamos a cargar nuevas unidades." : "No encontramos autos con esos filtros."}
           </p>
           {vehicles.length > 0 ? (
             <button
               type="button"
               onClick={resetFilters}
-              className="mt-4 h-12 border-2 px-6 font-bold"
+              className="mt-4 h-12 border px-6 font-semibold rounded-xl bg-white dark:bg-white/5"
               style={BRAND_BUTTON_STYLE}
             >
               Ver todos los autos

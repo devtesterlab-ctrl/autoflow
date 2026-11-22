@@ -4,7 +4,7 @@ import { formatKm, formatPrice, TRANSMISSION_LABELS } from "@/lib/vehicle-ui";
 
 function Badge({ children }: { children: React.ReactNode }) {
   return (
-    <li className="border-2 border-black px-2 py-1 dark:border-white">{children}</li>
+    <li className="rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-1 dark:border-white/10 dark:bg-white/5">{children}</li>
   );
 }
 
@@ -15,7 +15,7 @@ export function VehicleCard({ vehicle, priority = false }: { vehicle: PublicVehi
     <li>
       <Link
         href={`/auto/${vehicle.id}`}
-        className="group block border-2 border-black bg-white transition-transform active:translate-y-px dark:border-white dark:bg-neutral-950"
+        className="group block overflow-hidden border border-neutral-200 bg-white transition-transform active:scale-[0.98] dark:border-white/10 dark:bg-neutral-900 transition rounded-2xl shadow-sm"
       >
         <div className="relative aspect-[4/3] overflow-hidden bg-neutral-200 dark:bg-neutral-800">
           {vehicle.coverUrl ? (
@@ -31,20 +31,20 @@ export function VehicleCard({ vehicle, priority = false }: { vehicle: PublicVehi
               }`}
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-sm font-semibold text-neutral-500">
+            <div className="flex h-full items-center justify-center text-sm font-medium text-neutral-500">
               Sin foto
             </div>
           )}
 
           {reserved ? (
-            <span className="absolute left-0 top-4 bg-amber-400 px-4 py-2 text-sm font-black tracking-widest text-black">
+            <span className="absolute left-3 top-3 bg-amber-400 px-4 py-2 text-sm font-bold tracking-wider text-black rounded-full">
               RESERVADO
             </span>
           ) : null}
 
           {vehicle.isFeatured && !reserved ? (
             <span
-              className="absolute left-0 top-4 px-3 py-1.5 text-xs font-black tracking-widest"
+              className="absolute left-3 top-3 px-3 py-1.5 text-xs font-bold tracking-wider rounded-full"
               style={{ backgroundColor: "var(--brand-primary)", color: "var(--brand-primary-foreground)" }}
             >
               DESTACADO
@@ -54,7 +54,7 @@ export function VehicleCard({ vehicle, priority = false }: { vehicle: PublicVehi
 
         <div className="space-y-3 p-4">
           <div>
-            <h3 className="text-lg font-black leading-tight">
+            <h3 className="text-lg font-bold leading-tight">
               {vehicle.brand} {vehicle.model}
             </h3>
             <p className="min-h-5 truncate text-sm text-neutral-600 dark:text-neutral-400">
@@ -62,13 +62,13 @@ export function VehicleCard({ vehicle, priority = false }: { vehicle: PublicVehi
             </p>
           </div>
 
-          <ul className="flex flex-wrap gap-2 text-xs font-bold">
+          <ul className="flex flex-wrap gap-2 text-xs font-semibold">
             <Badge>{vehicle.year}</Badge>
             <Badge>{formatKm(vehicle.mileage)}</Badge>
             <Badge>{TRANSMISSION_LABELS[vehicle.transmission]}</Badge>
           </ul>
 
-          <p className="text-2xl font-black tracking-tight">{formatPrice(vehicle.price, vehicle.currency)}</p>
+          <p className="text-2xl font-bold tracking-tight font-display">{formatPrice(vehicle.price, vehicle.currency)}</p>
         </div>
       </Link>
     </li>

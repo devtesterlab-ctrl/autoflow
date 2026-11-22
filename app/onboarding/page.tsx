@@ -14,8 +14,8 @@ export default async function OnboardingPage() {
   return (
     <main className="mx-auto max-w-5xl space-y-6 px-4 py-8">
       <header className="space-y-1">
-        <p className="text-sm font-extrabold uppercase tracking-widest text-neutral-500">AutoFlow</p>
-        <h1 className="text-3xl font-extrabold tracking-tight">
+        <p className="text-sm font-semibold uppercase tracking-wider text-neutral-500">AutoFlow</p>
+        <h1 className="text-3xl font-semibold tracking-tight font-display">
           {user.role === "OWNER" ? "Armemos tu catálogo" : "Falta que el dueño configure la agencia"}
         </h1>
         <p className="text-neutral-600 dark:text-neutral-400">Son 3 pasos y menos de 2 minutos.</p>
@@ -35,7 +35,7 @@ export default async function OnboardingPage() {
           }}
         />
       ) : (
-        <p className="border-2 border-black p-4 font-semibold dark:border-white">
+        <p className="border border-neutral-200 p-4 font-medium dark:border-white/10 rounded-2xl bg-white dark:bg-white/[0.04]">
           Pedile al dueño de la agencia que complete la configuración inicial.
         </p>
       )}

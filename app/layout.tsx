@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-const sans = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+// Texto: Inter (limpia y muy legible en pantallas chicas). Títulos y precios: Plus Jakarta Sans.
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakarta", display: "swap" });
 
 export const metadata: Metadata = {
   title: { default: "AutoFlow", template: "%s · AutoFlow" },
@@ -12,8 +14,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="es-AR" className={sans.variable}>
-      <body className="min-h-dvh bg-white text-neutral-950 antialiased dark:bg-neutral-950 dark:text-neutral-50">
+    <html lang="es-AR" className={`${inter.variable} ${jakarta.variable}`}>
+      <body className="min-h-dvh bg-neutral-50 text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-50">
         {children}
       </body>
     </html>

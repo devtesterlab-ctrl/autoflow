@@ -63,8 +63,8 @@ export default async function SiteLayout({ children, params }: { children: React
   const mapsQuery = [tenant.address, tenant.city].filter(Boolean).join(", ");
 
   return (
-    <div style={style} className="min-h-dvh bg-white text-neutral-950 dark:bg-neutral-950 dark:text-neutral-50">
-      <header className="sticky top-0 z-20 border-b-2 border-black bg-white/95 backdrop-blur dark:border-white dark:bg-neutral-950/95">
+    <div style={style} className="min-h-dvh bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-50">
+      <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white/70 backdrop-blur-xl dark:border-white/10 dark:bg-neutral-950/60">
         <div className="h-1.5" style={{ backgroundColor: "var(--brand-primary)" }} />
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4">
           <Link href="/" className="flex min-w-0 items-center gap-3">
@@ -74,13 +74,13 @@ export default async function SiteLayout({ children, params }: { children: React
             ) : (
               <span
                 aria-hidden="true"
-                className="flex h-10 w-10 shrink-0 items-center justify-center border-2 text-lg font-black"
+                className="flex h-10 w-10 shrink-0 items-center justify-center border text-lg font-bold rounded-xl bg-white dark:bg-white/5"
                 style={BRAND_BUTTON_STYLE}
               >
                 {tenant.name.charAt(0).toUpperCase()}
               </span>
             )}
-            <span className="truncate text-lg font-black tracking-tight">{tenant.name}</span>
+            <span className="truncate text-lg font-bold tracking-tight">{tenant.name}</span>
           </Link>
 
           {whatsappUrl ? (
@@ -88,7 +88,7 @@ export default async function SiteLayout({ children, params }: { children: React
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex h-11 shrink-0 items-center gap-2 border-2 px-4 text-sm font-black"
+              className="flex h-11 shrink-0 items-center gap-2 border px-4 text-sm font-bold rounded-xl bg-white dark:bg-white/5"
               style={BRAND_BUTTON_STYLE}
             >
               <MessageCircle className="h-4 w-4" /> WhatsApp
@@ -99,10 +99,10 @@ export default async function SiteLayout({ children, params }: { children: React
 
       {children}
 
-      <footer className="border-t-2 border-black dark:border-white">
+      <footer className="border-t border-neutral-200 dark:border-white/10">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-8 text-sm sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">
-            <p className="font-black">{tenant.name}</p>
+            <p className="font-bold">{tenant.name}</p>
             {mapsQuery ? (
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`}

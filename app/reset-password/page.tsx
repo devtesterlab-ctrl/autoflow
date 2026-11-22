@@ -39,7 +39,7 @@ async function resetPasswordAction(formData: FormData) {
 }
 
 const INPUT_CLASS =
-  "h-14 w-full border-2 border-black bg-transparent px-4 text-base outline-none focus:ring-4 focus:ring-black/20 dark:border-white dark:focus:ring-white/30";
+  "h-12 w-full border border-neutral-300 bg-white px-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl";
 
 const ERRORS: Record<string, string> = {
   mismatch: "Las contraseñas no coinciden.",
@@ -57,9 +57,9 @@ export default async function ResetPasswordPage({
   if (!valid) {
     return (
       <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-6 px-6 py-10">
-        <h1 className="text-3xl font-extrabold tracking-tight">Link inválido</h1>
+        <h1 className="text-3xl font-semibold tracking-tight font-display">Link inválido</h1>
         <p className="text-neutral-600 dark:text-neutral-400">El link venció o ya se usó. Pedí uno nuevo y probá de nuevo.</p>
-        <a href="/forgot-password" className="flex h-14 items-center justify-center border-2 border-black bg-black font-bold text-white dark:border-white dark:bg-white dark:text-black">
+        <a href="/forgot-password" className="flex h-12 items-center justify-center border border-transparent bg-neutral-900 font-semibold text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl">
           Pedir un link nuevo
         </a>
       </main>
@@ -69,28 +69,28 @@ export default async function ResetPasswordPage({
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-8 px-6 py-10">
       <header className="space-y-2">
-        <h1 className="text-3xl font-extrabold tracking-tight">Nueva contraseña</h1>
+        <h1 className="text-3xl font-semibold tracking-tight font-display">Nueva contraseña</h1>
         <p className="text-neutral-600 dark:text-neutral-400">Elegí una contraseña de al menos 8 caracteres.</p>
       </header>
 
       <form action={resetPasswordAction} className="space-y-4">
         <input type="hidden" name="token" value={token} />
         <label className="block space-y-1">
-          <span className="text-sm font-semibold">Nueva contraseña</span>
+          <span className="text-sm font-medium">Nueva contraseña</span>
           <input name="password" type="password" required minLength={8} autoComplete="new-password" className={INPUT_CLASS} />
         </label>
         <label className="block space-y-1">
-          <span className="text-sm font-semibold">Repetila</span>
+          <span className="text-sm font-medium">Repetila</span>
           <input name="confirm" type="password" required minLength={8} autoComplete="new-password" className={INPUT_CLASS} />
         </label>
 
         {error ? (
-          <p role="alert" className="border-2 border-red-600 bg-red-50 p-3 text-sm font-semibold text-red-700 dark:bg-red-950 dark:text-red-300">
+          <p role="alert" className="border border-red-300 bg-red-50 p-3 text-sm font-medium text-red-700 dark:bg-red-950 dark:text-red-300 dark:border-red-800 rounded-2xl">
             {ERRORS[error] ?? ERRORS.weak}
           </p>
         ) : null}
 
-        <button type="submit" className="h-14 w-full border-2 border-black bg-black text-lg font-bold text-white active:translate-y-px dark:border-white dark:bg-white dark:text-black">
+        <button type="submit" className="h-12 w-full border border-transparent bg-neutral-900 text-base font-semibold text-white active:scale-[0.98] dark:border-transparent dark:bg-white dark:text-neutral-900 transition hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl">
           Guardar contraseña
         </button>
       </form>

@@ -46,7 +46,7 @@ async function requestResetAction(formData: FormData) {
 }
 
 const INPUT_CLASS =
-  "h-14 w-full border-2 border-black bg-transparent px-4 text-base outline-none focus:ring-4 focus:ring-black/20 dark:border-white dark:focus:ring-white/30";
+  "h-12 w-full border border-neutral-300 bg-white px-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl";
 
 export default async function ForgotPasswordPage({
   searchParams,
@@ -59,24 +59,24 @@ export default async function ForgotPasswordPage({
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-8 px-6 py-10">
       <header className="space-y-2">
-        <h1 className="text-3xl font-extrabold tracking-tight">Recuperar contraseña</h1>
+        <h1 className="text-3xl font-semibold tracking-tight font-display">Recuperar contraseña</h1>
         <p className="text-neutral-600 dark:text-neutral-400">
           Ingresá tu email y te mandamos un link para elegir una nueva.
         </p>
       </header>
 
       {expired ? (
-        <p role="alert" className="border-2 border-red-600 bg-red-50 p-3 text-sm font-semibold text-red-700 dark:bg-red-950 dark:text-red-300">
+        <p role="alert" className="border border-red-300 bg-red-50 p-3 text-sm font-medium text-red-700 dark:bg-red-950 dark:text-red-300 dark:border-red-800 rounded-2xl">
           Ese link venció o ya se usó. Pedí uno nuevo.
         </p>
       ) : null}
 
       {sent ? (
-        <div role="status" className="space-y-2 border-2 border-black p-4 dark:border-white">
+        <div role="status" className="space-y-2 border border-neutral-200 p-4 dark:border-white/10 rounded-2xl bg-white dark:bg-white/[0.04]">
           <p className="font-bold">Listo. Si el email está registrado, te enviamos un link válido por 60 minutos.</p>
           <p className="text-sm text-neutral-600 dark:text-neutral-400">Revisá también la carpeta de spam.</p>
           {devHint ? (
-            <p className="text-sm font-semibold text-amber-700 dark:text-amber-400">
+            <p className="text-sm font-medium text-amber-700 dark:text-amber-400">
               Modo desarrollo: sin RESEND_API_KEY el email aparece en la terminal donde corre <code>npm run dev</code>.
             </p>
           ) : null}
@@ -84,16 +84,16 @@ export default async function ForgotPasswordPage({
       ) : (
         <form action={requestResetAction} className="space-y-4">
           <label className="block space-y-1">
-            <span className="text-sm font-semibold">Email</span>
+            <span className="text-sm font-medium">Email</span>
             <input name="email" type="email" required autoComplete="email" inputMode="email" className={INPUT_CLASS} />
           </label>
-          <button type="submit" className="h-14 w-full border-2 border-black bg-black text-lg font-bold text-white active:translate-y-px dark:border-white dark:bg-white dark:text-black">
+          <button type="submit" className="h-12 w-full border border-transparent bg-neutral-900 text-base font-semibold text-white active:scale-[0.98] dark:border-transparent dark:bg-white dark:text-neutral-900 transition hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl">
             Enviarme el link
           </button>
         </form>
       )}
 
-      <a href="/login" className="text-sm font-bold underline underline-offset-4">
+      <a href="/login" className="text-sm font-semibold underline underline-offset-4">
         Volver a ingresar
       </a>
     </main>

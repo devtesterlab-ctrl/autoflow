@@ -23,17 +23,17 @@ export function FinanceCalculator({ price, currency }: FinanceCalculatorProps) {
   const percentage = price > 0 ? Math.round((downPayment / price) * 100) : 0;
 
   return (
-    <section className="space-y-4 border-2 border-black p-4 dark:border-white" aria-labelledby="finance-title">
-      <h2 id="finance-title" className="text-lg font-black">
+    <section className="space-y-4 border border-neutral-200 p-4 dark:border-white/10 rounded-2xl bg-white dark:bg-white/[0.04]" aria-labelledby="finance-title">
+      <h2 id="finance-title" className="text-lg font-bold">
         Calculá tu anticipo
       </h2>
 
       <div className="space-y-3">
         <div className="flex items-end justify-between gap-3">
-          <label htmlFor="down-payment" className="text-sm font-bold">
+          <label htmlFor="down-payment" className="text-sm font-semibold">
             Cuánto entregás
           </label>
-          <output htmlFor="down-payment" className="text-xl font-black">
+          <output htmlFor="down-payment" className="text-xl font-bold font-display">
             {formatPrice(downPayment, currency)}
           </output>
         </div>
@@ -60,7 +60,7 @@ export function FinanceCalculator({ price, currency }: FinanceCalculatorProps) {
                   type="button"
                   aria-pressed={selected}
                   onClick={() => setDownPayment(target)}
-                  className="h-11 w-full border-2 border-black text-sm font-bold dark:border-white"
+                  className="h-11 w-full border border-neutral-300 text-sm font-semibold dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
                   style={selected ? BRAND_BUTTON_STYLE : undefined}
                 >
                   {value}%
@@ -71,16 +71,16 @@ export function FinanceCalculator({ price, currency }: FinanceCalculatorProps) {
         </ul>
       </div>
 
-      <dl className="grid grid-cols-2 gap-px border-2 border-black bg-black dark:border-white dark:bg-white">
+      <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-200 dark:border-white/10 dark:bg-white/10">
         <div className="bg-white p-3 dark:bg-neutral-950">
-          <dt className="text-xs font-bold uppercase tracking-wide text-neutral-600 dark:text-neutral-400">Anticipo</dt>
-          <dd className="text-base font-black">{percentage}%</dd>
+          <dt className="text-xs font-semibold uppercase tracking-wide text-neutral-600 dark:text-neutral-400">Anticipo</dt>
+          <dd className="text-base font-bold">{percentage}%</dd>
         </div>
         <div className="bg-white p-3 dark:bg-neutral-950">
-          <dt className="text-xs font-bold uppercase tracking-wide text-neutral-600 dark:text-neutral-400">
+          <dt className="text-xs font-semibold uppercase tracking-wide text-neutral-600 dark:text-neutral-400">
             Saldo a financiar
           </dt>
-          <dd className="text-base font-black">{formatPrice(remaining, currency)}</dd>
+          <dd className="text-base font-bold">{formatPrice(remaining, currency)}</dd>
         </div>
       </dl>
 

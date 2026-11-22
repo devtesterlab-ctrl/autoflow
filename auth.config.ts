@@ -19,10 +19,10 @@ export const authConfig = {
       return token;
     },
     session({ session, token }) {
-      session.user.id = token.uid;
-      session.user.tenantId = token.tenantId;
-      session.user.role = token.role;
-      session.user.sessionVersion = token.sv;
+      session.user.id = token.uid as string;
+      session.user.tenantId = token.tenantId as string;
+      session.user.role = token.role as string;
+      session.user.sessionVersion = token.sv as number;
       return session;
     },
   },

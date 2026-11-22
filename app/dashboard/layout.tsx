@@ -15,9 +15,9 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   return (
     <LeadAlertsProvider initial={summary}>
       <div className="min-h-dvh pb-24 md:pb-8">
-        <header className="sticky top-0 z-20 border-b-2 border-black bg-white dark:border-white dark:bg-neutral-950">
-          <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
-            <span className="truncate text-sm font-extrabold uppercase tracking-widest">{tenant.name}</span>
+        <header className="sticky top-0 z-20 border-b border-neutral-200 bg-white/70 dark:border-white/10 dark:bg-neutral-950/60 backdrop-blur-xl">
+          <div className="mx-auto flex h-12 max-w-6xl items-center justify-between px-4">
+            <span className="truncate text-sm font-semibold uppercase tracking-wider">{tenant.name}</span>
             <nav className="hidden gap-2 md:flex" aria-label="Principal">
               <DashboardNav variant="top" showAdmin={showAdmin} />
             </nav>
@@ -28,7 +28,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
         <nav
           aria-label="Principal"
-          className="fixed inset-x-0 bottom-0 z-20 grid h-16 border-t-2 border-black bg-white md:hidden dark:border-white dark:bg-neutral-950"
+          className="fixed inset-x-0 bottom-0 z-20 grid h-16 border-t border-neutral-200 bg-white/70 md:hidden dark:border-white/10 dark:bg-neutral-950/60 backdrop-blur-xl"
           style={{ gridTemplateColumns: `repeat(${showAdmin ? 5 : 4}, minmax(0, 1fr))` }}
         >
           <DashboardNav variant="bottom" showAdmin={showAdmin} />

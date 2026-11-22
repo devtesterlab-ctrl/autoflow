@@ -17,7 +17,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ domai
   return (
     <main className="mx-auto max-w-6xl space-y-6 px-4 py-6">
       <header className="space-y-1">
-        <h1 className="text-3xl font-black tracking-tight sm:text-4xl">Autos usados</h1>
+        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl font-display">Autos usados</h1>
         <p className="text-neutral-600 dark:text-neutral-400">
           {tenant.city ? `${tenant.city} · ` : ""}Consultá por WhatsApp, respondemos al instante.
         </p>

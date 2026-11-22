@@ -47,7 +47,7 @@ export default async function VehiclesPage() {
 
   return (
     <main className="mx-auto max-w-6xl space-y-6 px-4 py-6">
-      <h1 className="text-3xl font-extrabold tracking-tight">Inventario</h1>
+      <h1 className="text-3xl font-semibold tracking-tight font-display">Inventario</h1>
       <PlanBanner usage={usage} agencyName={tenant.name} />
       <VehicleInventory
         vehicles={vehicles}

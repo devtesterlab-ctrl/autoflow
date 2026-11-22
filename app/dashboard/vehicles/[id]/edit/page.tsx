@@ -41,7 +41,7 @@ export default async function EditVehiclePage({ params }: { params: Promise<{ id
 
   return (
     <main className="mx-auto max-w-2xl space-y-6 px-4 py-6">
-      <h1 className="text-3xl font-extrabold tracking-tight">
+      <h1 className="text-3xl font-semibold tracking-tight font-display">
         Editar {vehicle.brand} {vehicle.model}
       </h1>
       <VehicleForm mode="edit" vehicleId={vehicle.id} initial={initial} />

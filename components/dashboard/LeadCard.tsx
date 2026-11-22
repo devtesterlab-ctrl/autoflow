@@ -24,7 +24,7 @@ interface LeadCardProps {
 const FOLLOW_UP_CLASSES = {
   overdue: "bg-red-600 text-white",
   today: "bg-amber-400 text-black",
-  upcoming: "border-2 border-black dark:border-white",
+  upcoming: "border border-neutral-200 dark:border-white/10 rounded-xl",
 } as const;
 
 export function LeadCard({ lead, now, tenantName, onOpen, onMove }: LeadCardProps) {
@@ -40,18 +40,18 @@ export function LeadCard({ lead, now, tenantName, onOpen, onMove }: LeadCardProp
   const whatsappUrl = digits ? buildWhatsappUrl(digits, message) : null;
 
   const nextStatus = NEXT_STATUS[lead.status];
-  const buttonBase = "flex h-11 items-center justify-center gap-2 border-2 px-3 text-sm font-bold active:translate-y-px";
+  const buttonBase = "flex h-11 items-center justify-center gap-2 border px-3 text-sm font-semibold active:scale-[0.98] transition rounded-xl bg-white dark:bg-white/5";
 
   return (
     <div
-      className={`border-2 bg-white dark:bg-neutral-950 ${
-        overdue ? "border-red-600" : "border-black dark:border-white"
-      }`}
+      className={`border bg-white dark:bg-neutral-900 ${
+        overdue ? "border-red-600" : "border-neutral-200 dark:border-white/10"
+      } rounded-xl`}
     >
       <button type="button" onClick={onOpen} className="block w-full space-y-2 p-3 text-left">
         <div className="flex items-start justify-between gap-2">
-          <p className="text-base font-extrabold leading-tight">{lead.clientName}</p>
-          <span className="shrink-0 text-xs font-semibold text-neutral-500">
+          <p className="text-base font-semibold leading-tight">{lead.clientName}</p>
+          <span className="shrink-0 text-xs font-medium text-neutral-500">
             {now !== null ? timeAgo(lead.createdAt, now) : ""}
           </span>
         </div>
@@ -63,19 +63,19 @@ export function LeadCard({ lead, now, tenantName, onOpen, onMove }: LeadCardProp
           ) : (
             <div className="h-10 w-14 shrink-0 bg-neutral-200 dark:bg-neutral-800" />
           )}
-          <p className="min-w-0 truncate text-sm font-semibold">
+          <p className="min-w-0 truncate text-sm font-medium">
             {lead.vehicle ? `${lead.vehicle.label} · ${lead.vehicle.year}` : "Sin auto asociado"}
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 text-xs font-bold">
-          <span className="border-2 border-black/30 px-2 py-0.5 dark:border-white/30">
+        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
+          <span className="border border-neutral-200 px-2 py-0.5 dark:border-white/10 rounded-xl">
             {LEAD_SOURCE_LABELS[lead.source]}
           </span>
           {closed ? (
             <span
               className={`px-2 py-0.5 ${
-                lead.status === "WON" ? "bg-emerald-600 text-white" : "bg-neutral-800 text-white dark:bg-neutral-200 dark:text-black"
+                lead.status === "WON" ? "bg-emerald-600 text-white" : "bg-neutral-800 text-white dark:bg-neutral-200 dark:text-neutral-900"
               }`}
             >
               {LEAD_STATUS_LABELS[lead.status].toUpperCase()}
@@ -92,7 +92,7 @@ export function LeadCard({ lead, now, tenantName, onOpen, onMove }: LeadCardProp
         {lead.notes ? <p className="line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">{lead.notes}</p> : null}
       </button>
 
-      <div className="space-y-2 border-t-2 border-black/20 p-2 dark:border-white/20">
+      <div className="space-y-2 border-t border-neutral-200 p-2 dark:border-white/10">
         {whatsappUrl ? (
           <a
             href={whatsappUrl}
@@ -101,19 +101,19 @@ export function LeadCard({ lead, now, tenantName, onOpen, onMove }: LeadCardProp
             onClick={() => {
               if (lead.status === "NEW") onMove("CONTACTED");
             }}
-            className="flex h-12 items-center justify-center gap-2 border-2 border-emerald-700 bg-emerald-600 text-base font-extrabold text-white active:translate-y-px"
+            className="flex h-12 items-center justify-center gap-2 border border-emerald-700 bg-emerald-600 text-base font-semibold text-white active:scale-[0.98] transition rounded-xl"
           >
             <MessageCircle className="h-5 w-5" /> WhatsApp
           </a>
         ) : lead.clientPhone ? (
           <a
             href={`tel:${lead.clientPhone.replace(/[^\d+]/g, "")}`}
-            className={`${buttonBase} h-12 border-black dark:border-white`}
+            className={`${buttonBase} h-12 border-neutral-300 dark:border-white/20`}
           >
             Llamar · {lead.clientPhone}
           </a>
         ) : (
-          <button type="button" onClick={onOpen} className={`${buttonBase} h-12 w-full border-dashed border-black/50 dark:border-white/50`}>
+          <button type="button" onClick={onOpen} className={`${buttonBase} h-12 w-full border-dashed border-neutral-300 dark:border-white/20`}>
             Sin teléfono · esperá su mensaje o cargalo
           </button>
         )}
@@ -122,7 +122,7 @@ export function LeadCard({ lead, now, tenantName, onOpen, onMove }: LeadCardProp
           <button
             type="button"
             onClick={() => onMove(nextStatus)}
-            className={`${buttonBase} w-full border-black bg-black text-white dark:border-white dark:bg-white dark:text-black`}
+            className={`${buttonBase} w-full border-transparent bg-neutral-900 text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors`}
           >
             {NEXT_ACTION_LABELS[lead.status]} →
           </button>
@@ -133,14 +133,14 @@ export function LeadCard({ lead, now, tenantName, onOpen, onMove }: LeadCardProp
             <button type="button" onClick={() => onMove("WON")} className={`${buttonBase} border-emerald-700 bg-emerald-600 text-white`}>
               Ganado
             </button>
-            <button type="button" onClick={() => onMove("LOST")} className={`${buttonBase} border-black dark:border-white`}>
+            <button type="button" onClick={() => onMove("LOST")} className={`${buttonBase} border-neutral-200 dark:border-white/10`}>
               Perdido
             </button>
           </div>
         ) : null}
 
         {closed ? (
-          <button type="button" onClick={() => onMove("CONTACTED")} className={`${buttonBase} w-full border-black/40 dark:border-white/40`}>
+          <button type="button" onClick={() => onMove("CONTACTED")} className={`${buttonBase} w-full border-neutral-200 dark:border-white/10`}>
             Reabrir
           </button>
         ) : null}

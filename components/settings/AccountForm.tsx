@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import { changePassword, updateProfile } from "@/app/dashboard/settings/actions";
 
 const INPUT_CLASS =
-  "h-14 w-full border-2 border-black bg-transparent px-4 text-base outline-none focus:ring-4 focus:ring-black/20 dark:border-white dark:focus:ring-white/30";
+  "h-12 w-full border border-neutral-300 bg-white px-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl";
 
 type Message = { type: "ok" | "error"; text: string } | null;
 
@@ -14,7 +14,7 @@ function Notice({ message }: { message: Message }) {
   return (
     <p
       role={message.type === "error" ? "alert" : "status"}
-      className={`text-sm font-bold ${message.type === "error" ? "text-red-600" : "text-emerald-700 dark:text-emerald-400"}`}
+      className={`text-sm font-semibold ${message.type === "error" ? "text-red-600" : "text-emerald-700 dark:text-emerald-400"}`}
     >
       {message.text}
     </p>
@@ -61,16 +61,16 @@ export function AccountForm({ name: initialName, email }: { name: string; email:
 
   return (
     <div className="space-y-6">
-      <section className="space-y-4 border-2 border-black p-4 dark:border-white" aria-labelledby="profile-title">
-        <h2 id="profile-title" className="text-xl font-extrabold">
+      <section className="space-y-4 border border-neutral-200 p-4 dark:border-white/10 rounded-2xl bg-white dark:bg-white/[0.04]" aria-labelledby="profile-title">
+        <h2 id="profile-title" className="text-xl font-semibold font-display">
           Mi cuenta
         </h2>
         <label className="block space-y-1">
-          <span className="text-sm font-semibold">Nombre</span>
+          <span className="text-sm font-medium">Nombre</span>
           <input value={name} onChange={(event) => setName(event.target.value)} className={INPUT_CLASS} autoComplete="name" />
         </label>
         <label className="block space-y-1">
-          <span className="text-sm font-semibold">Email</span>
+          <span className="text-sm font-medium">Email</span>
           <input value={email} readOnly className={`${INPUT_CLASS} opacity-60`} />
         </label>
         <Notice message={profileMessage} />
@@ -78,26 +78,26 @@ export function AccountForm({ name: initialName, email }: { name: string; email:
           type="button"
           onClick={saveProfile}
           disabled={profilePending}
-          className="flex h-12 items-center gap-2 border-2 border-black bg-black px-6 font-bold text-white disabled:opacity-50 dark:border-white dark:bg-white dark:text-black"
+          className="flex h-12 items-center gap-2 border border-transparent bg-neutral-900 px-6 font-semibold text-white disabled:opacity-50 dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
         >
           {profilePending ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Guardar nombre
         </button>
       </section>
 
-      <section className="space-y-4 border-2 border-black p-4 dark:border-white" aria-labelledby="password-title">
-        <h2 id="password-title" className="text-xl font-extrabold">
+      <section className="space-y-4 border border-neutral-200 p-4 dark:border-white/10 rounded-2xl bg-white dark:bg-white/[0.04]" aria-labelledby="password-title">
+        <h2 id="password-title" className="text-xl font-semibold font-display">
           Cambiar contraseña
         </h2>
         <label className="block space-y-1">
-          <span className="text-sm font-semibold">Contraseña actual</span>
+          <span className="text-sm font-medium">Contraseña actual</span>
           <input type="password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} autoComplete="current-password" className={INPUT_CLASS} />
         </label>
         <label className="block space-y-1">
-          <span className="text-sm font-semibold">Nueva contraseña</span>
+          <span className="text-sm font-medium">Nueva contraseña</span>
           <input type="password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} autoComplete="new-password" className={INPUT_CLASS} />
         </label>
         <label className="block space-y-1">
-          <span className="text-sm font-semibold">Repetir nueva contraseña</span>
+          <span className="text-sm font-medium">Repetir nueva contraseña</span>
           <input type="password" value={confirm} onChange={(event) => setConfirm(event.target.value)} autoComplete="new-password" className={INPUT_CLASS} />
         </label>
         <p className="text-sm text-neutral-600 dark:text-neutral-400">Al cambiarla se cierran todas tus sesiones y tenés que ingresar de nuevo.</p>
@@ -106,7 +106,7 @@ export function AccountForm({ name: initialName, email }: { name: string; email:
           type="button"
           onClick={savePassword}
           disabled={passwordPending || !currentPassword || !newPassword}
-          className="flex h-12 items-center gap-2 border-2 border-black px-6 font-bold disabled:opacity-50 dark:border-white"
+          className="flex h-12 items-center gap-2 border border-neutral-300 px-6 font-semibold disabled:opacity-50 dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
         >
           {passwordPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null} Cambiar contraseña
         </button>

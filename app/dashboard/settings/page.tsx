@@ -11,7 +11,7 @@ export default async function SettingsPage() {
 
   return (
     <main className="mx-auto max-w-5xl space-y-6 px-4 py-6">
-      <h1 className="text-3xl font-extrabold tracking-tight">Ajustes</h1>
+      <h1 className="text-3xl font-semibold tracking-tight font-display">Ajustes</h1>
 
       <PlanBanner usage={usage} agencyName={tenant.name} />
 
@@ -33,7 +33,7 @@ export default async function SettingsPage() {
           }}
         />
       ) : (
-        <p className="border-2 border-black p-4 font-semibold dark:border-white">
+        <p className="border border-neutral-200 p-4 font-medium dark:border-white/10 rounded-2xl bg-white dark:bg-white/[0.04]">
           Los ajustes de la agencia los edita el dueño. Acá podés cambiar tus datos y tu contraseña.
         </p>
       )}

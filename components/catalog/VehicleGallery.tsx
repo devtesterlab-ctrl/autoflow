@@ -81,7 +81,7 @@ function Lightbox(props: {
       </div>
 
       <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between p-4 pt-[calc(1rem+env(safe-area-inset-top))]">
-        <span className="bg-black/70 px-3 py-2 text-sm font-bold text-white">
+        <span className="bg-black/70 px-3 py-2 text-sm font-semibold text-white rounded-md">
           {index + 1} / {images.length}
         </span>
         <button
@@ -144,7 +144,7 @@ export function VehicleGallery({ images, alt, reserved }: VehicleGalleryProps) {
 
   if (images.length === 0) {
     return (
-      <div className="flex aspect-[4/3] items-center justify-center border-2 border-black bg-neutral-200 text-sm font-semibold text-neutral-500 dark:border-white dark:bg-neutral-800">
+      <div className="flex aspect-[4/3] items-center justify-center border border-neutral-200 bg-neutral-200 text-sm font-medium text-neutral-500 dark:border-white/10 dark:bg-neutral-800 rounded-xl overflow-hidden">
         Sin fotos
       </div>
     );
@@ -152,7 +152,7 @@ export function VehicleGallery({ images, alt, reserved }: VehicleGalleryProps) {
 
   return (
     <div className="space-y-3">
-      <div className="relative border-2 border-black dark:border-white">
+      <div className="relative overflow-hidden border border-neutral-200 dark:border-white/10 rounded-2xl">
         <div
           ref={trackRef}
           onScroll={(event) => {
@@ -184,12 +184,12 @@ export function VehicleGallery({ images, alt, reserved }: VehicleGalleryProps) {
         </div>
 
         {reserved ? (
-          <span className="pointer-events-none absolute left-0 top-4 bg-amber-400 px-4 py-2 text-sm font-black tracking-widest text-black">
+          <span className="pointer-events-none absolute left-3 top-3 bg-amber-400 px-4 py-2 text-sm font-bold tracking-wider text-black rounded-full">
             RESERVADO
           </span>
         ) : null}
 
-        <span className="pointer-events-none absolute bottom-3 right-3 flex items-center gap-2 bg-black/70 px-3 py-2 text-sm font-bold text-white">
+        <span className="pointer-events-none absolute bottom-3 right-3 flex items-center gap-2 bg-black/70 px-3 py-2 text-sm font-semibold text-white rounded-md">
           <Expand className="h-4 w-4" /> {index + 1} / {images.length}
         </span>
 
@@ -226,9 +226,9 @@ export function VehicleGallery({ images, alt, reserved }: VehicleGalleryProps) {
                 aria-label={`Ir a la foto ${position + 1}`}
                 aria-current={position === index}
                 onClick={() => goTo(position)}
-                className={`block h-16 w-24 border-2 ${
-                  position === index ? "border-black dark:border-white" : "border-transparent opacity-60"
-                }`}
+                className={`block h-16 w-24 border ${
+                  position === index ? "border-neutral-200 dark:border-white/10" : "border-transparent opacity-60"
+                } rounded-xl`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={image.url} alt="" loading="lazy" className="h-full w-full object-cover" />

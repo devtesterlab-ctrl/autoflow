@@ -37,7 +37,7 @@ const NOTICES: Record<string, string> = {
 };
 
 const INPUT_CLASS =
-  "h-14 w-full border-2 border-black bg-transparent px-4 text-base outline-none focus:ring-4 focus:ring-black/20 dark:border-white dark:focus:ring-white/30";
+  "h-12 w-full border border-neutral-300 bg-white px-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl";
 
 export default async function LoginPage({
   searchParams,
@@ -49,12 +49,12 @@ export default async function LoginPage({
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-8 px-6">
       <header className="space-y-2">
-        <h1 className="text-3xl font-extrabold tracking-tight">Ingresar</h1>
+        <h1 className="text-3xl font-semibold tracking-tight font-display">Ingresar</h1>
         <p className="text-neutral-600 dark:text-neutral-400">Panel de tu agencia.</p>
       </header>
 
       {notice && NOTICES[notice] ? (
-        <p role="status" className="border-2 border-black p-3 text-sm font-semibold dark:border-white">
+        <p role="status" className="border border-neutral-200 p-3 text-sm font-medium dark:border-white/10 rounded-2xl bg-white dark:bg-white/[0.04]">
           {NOTICES[notice]}
         </p>
       ) : null}
@@ -63,35 +63,35 @@ export default async function LoginPage({
         <input type="hidden" name="callbackUrl" value={callbackUrl ?? "/dashboard"} />
 
         <label className="block space-y-1">
-          <span className="text-sm font-semibold">Email</span>
+          <span className="text-sm font-medium">Email</span>
           <input name="email" type="email" required autoComplete="email" inputMode="email" className={INPUT_CLASS} />
         </label>
 
         <label className="block space-y-1">
-          <span className="text-sm font-semibold">Contraseña</span>
+          <span className="text-sm font-medium">Contraseña</span>
           <input name="password" type="password" required minLength={8} autoComplete="current-password" className={INPUT_CLASS} />
         </label>
 
         {error ? (
-          <p role="alert" className="border-2 border-red-600 bg-red-50 p-3 text-sm font-semibold text-red-700 dark:bg-red-950 dark:text-red-300">
+          <p role="alert" className="border border-red-300 bg-red-50 p-3 text-sm font-medium text-red-700 dark:bg-red-950 dark:text-red-300 dark:border-red-800 rounded-2xl">
             {error === "rate" ? "Demasiados intentos. Probá de nuevo en unos minutos." : "Email o contraseña incorrectos."}
           </p>
         ) : null}
 
-        <button type="submit" className="h-14 w-full border-2 border-black bg-black text-lg font-bold text-white active:translate-y-px dark:border-white dark:bg-white dark:text-black">
+        <button type="submit" className="h-12 w-full border border-transparent bg-neutral-900 text-base font-semibold text-white active:scale-[0.98] dark:border-transparent dark:bg-white dark:text-neutral-900 transition hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl">
           Entrar
         </button>
       </form>
 
       <div className="space-y-2 text-sm text-neutral-600 dark:text-neutral-400">
         <p>
-          <a href="/forgot-password" className="font-bold underline underline-offset-4">
+          <a href="/forgot-password" className="font-semibold underline underline-offset-4">
             Olvidé mi contraseña
           </a>
         </p>
         <p>
           ¿Primera vez?{" "}
-          <a href="/register" className="font-bold underline underline-offset-4">
+          <a href="/register" className="font-semibold underline underline-offset-4">
             Crear cuenta
           </a>
         </p>
