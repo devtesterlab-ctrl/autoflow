@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { ArrowUpDown, RotateCcw, Search, SlidersHorizontal, X } from "lucide-react";
 import { BRAND_BUTTON_STYLE } from "@/components/catalog/brand-style";
 import { VehicleCard } from "@/components/catalog/VehicleCard";
 import type { PublicVehicle } from "@/lib/catalog-types";
@@ -31,11 +31,10 @@ const CURRENCY_CHIPS: { value: CurrencyFilter; label: string }[] = [
   { value: "ARS", label: "Pesos" },
 ];
 
-/** Sin cotización no se pueden comparar USD y pesos: al ordenar por precio se agrupa por moneda (USD primero). */
 const CURRENCY_RANK: Record<CurrencyValue, number> = { USD: 0, ARS: 1 };
 
 const normalize = (value: string) =>
-  value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  value.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
 function compareByPrice(a: PublicVehicle, b: PublicVehicle): number {
   if (a.currency !== b.currency) return CURRENCY_RANK[a.currency] - CURRENCY_RANK[b.currency];
@@ -43,7 +42,7 @@ function compareByPrice(a: PublicVehicle, b: PublicVehicle): number {
 }
 
 const SELECT_CLASS =
-  "h-12 w-full border border-neutral-300 bg-white px-3 text-base dark:border-white/20 dark:bg-white/5 rounded-xl";
+  "h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm font-medium text-slate-800 outline-none transition-colors focus:border-slate-400 dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:focus:border-white/30";
 
 function Chips<T extends string>(props: {
   label: string;
@@ -53,7 +52,9 @@ function Chips<T extends string>(props: {
 }) {
   return (
     <div role="group" aria-label={props.label} className="space-y-2">
-      <span className="block text-sm font-semibold">{props.label}</span>
+      <span className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        {props.label}
+      </span>
       <div className="flex flex-wrap gap-2">
         {props.options.map((option) => {
           const selected = option.value === props.value;
@@ -63,7 +64,7 @@ function Chips<T extends string>(props: {
               type="button"
               aria-pressed={selected}
               onClick={() => props.onChange(option.value)}
-              className="h-11 border border-neutral-300 px-4 text-sm font-semibold dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
+              className="h-9 rounded-full border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-700 transition-all hover:border-slate-300 dark:border-white/10 dark:bg-white/5 dark:text-slate-200"
               style={selected ? BRAND_BUTTON_STYLE : undefined}
             >
               {option.label}
@@ -154,60 +155,117 @@ export function CatalogBrowser({ vehicles }: { vehicles: PublicVehicle[] }) {
   }
 
   return (
-    <section className="space-y-4" aria-label="Catálogo de vehículos">
+    <section className="space-y-6" aria-label="Catálogo de vehículos">
+      {/* Barra superior compacta: Buscador + Filtros + Orden */}
       <div className="space-y-3">
-        <label className="relative block">
-          <span className="sr-only">Buscar</span>
-          <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2" />
-          <input
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Buscar marca, modelo o año"
-            className="h-12 w-full border border-neutral-300 bg-white pl-12 pr-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl"
-          />
-        </label>
-
-        <div className="grid grid-cols-[auto_1fr] gap-3">
-          <button
-            type="button"
-            aria-expanded={showFilters}
-            onClick={() => setShowFilters((value) => !value)}
-            className="flex h-12 items-center gap-2 border border-neutral-300 px-4 text-sm font-semibold dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
-            style={showFilters || activeFilters > 0 ? BRAND_BUTTON_STYLE : undefined}
-          >
-            <SlidersHorizontal className="h-4 w-4" />
-            Filtros{activeFilters > 0 ? ` (${activeFilters})` : ""}
-          </button>
-          <label>
-            <span className="sr-only">Ordenar por</span>
-            <select value={sort} onChange={(event) => setSort(event.target.value as Sort)} className={SELECT_CLASS}>
-              {SORT_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <label className="relative flex-1">
+            <span className="sr-only">Buscar</span>
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Buscar marca, modelo o año..."
+              className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 shadow-2xs outline-none transition-all placeholder:text-slate-400 focus:border-slate-400 focus:ring-4 focus:ring-slate-900/5 dark:border-white/10 dark:bg-[#11131C] dark:text-white dark:focus:border-white/30 dark:focus:ring-white/5"
+            />
           </label>
-        </div>
 
-        {showFilters ? (
-          <div className="space-y-5 border border-neutral-200 p-4 dark:border-white/10 rounded-2xl bg-white dark:bg-white/[0.04]">
-            <label className="block space-y-2">
-              <span className="block text-sm font-semibold">Marca</span>
-              <select value={brand} onChange={(event) => setBrand(event.target.value)} className={SELECT_CLASS}>
-                <option value="">Todas</option>
-                {brands.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
+          <div className="grid grid-cols-[auto_1fr] gap-2.5 sm:flex sm:items-center">
+            <button
+              type="button"
+              aria-expanded={showFilters}
+              onClick={() => setShowFilters((value) => !value)}
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 shadow-2xs transition-all hover:border-slate-300 dark:border-white/10 dark:bg-[#11131C] dark:text-slate-100"
+              style={showFilters || activeFilters > 0 ? BRAND_BUTTON_STYLE : undefined}
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+              <span>Filtros</span>
+              {activeFilters > 0 ? (
+                <span className="ml-0.5 rounded-full bg-black/15 px-1.5 py-0.5 text-xs tabular-nums">
+                  {activeFilters}
+                </span>
+              ) : null}
+            </button>
+
+            <label className="relative sm:w-48">
+              <span className="sr-only">Ordenar por</span>
+              <ArrowUpDown className="pointer-events-none absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+              <select
+                value={sort}
+                onChange={(event) => setSort(event.target.value as Sort)}
+                className="h-11 w-full appearance-none rounded-xl border border-slate-200 bg-white pl-9 pr-8 text-sm font-semibold text-slate-800 shadow-2xs outline-none transition-colors focus:border-slate-400 dark:border-white/10 dark:bg-[#11131C] dark:text-slate-100"
+              >
+                {SORT_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
                   </option>
                 ))}
               </select>
             </label>
+          </div>
+        </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <label className="block space-y-2">
-                <span className="block text-sm font-semibold">Año desde</span>
+        {/* Pills rápidas de marca en desktop/mobile */}
+        {brands.length > 1 ? (
+          <div className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
+            <button
+              type="button"
+              aria-pressed={brand === ""}
+              onClick={() => setBrand("")}
+              className={`h-8 shrink-0 rounded-full border px-3.5 text-xs font-semibold transition-all ${
+                brand === ""
+                  ? "border-transparent shadow-2xs"
+                  : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-white/10 dark:bg-[#11131C] dark:text-slate-300"
+              }`}
+              style={brand === "" ? BRAND_BUTTON_STYLE : undefined}
+            >
+              Todas las marcas
+            </button>
+            {brands.map((item) => {
+              const selected = brand === item;
+              return (
+                <button
+                  key={item}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => setBrand(selected ? "" : item)}
+                  className={`h-8 shrink-0 rounded-full border px-3.5 text-xs font-semibold transition-all ${
+                    selected
+                      ? "border-transparent shadow-2xs"
+                      : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-white/10 dark:bg-[#11131C] dark:text-slate-300"
+                  }`}
+                  style={selected ? BRAND_BUTTON_STYLE : undefined}
+                >
+                  {item}
+                </button>
+              );
+            })}
+          </div>
+        ) : null}
+
+        {/* Panel desplegable de filtros avanzados */}
+        {showFilters ? (
+          <div className="space-y-5 rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs dark:border-white/10 dark:bg-[#11131C]">
+            <div className="grid gap-4 sm:grid-cols-3">
+              <label className="block space-y-1.5">
+                <span className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Marca
+                </span>
+                <select value={brand} onChange={(event) => setBrand(event.target.value)} className={SELECT_CLASS}>
+                  <option value="">Todas</option>
+                  {brands.map((item) => (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="block space-y-1.5">
+                <span className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Año desde
+                </span>
                 <select value={yearFrom} onChange={(event) => setYearFrom(event.target.value)} className={SELECT_CLASS}>
                   <option value="">Cualquiera</option>
                   {years.map((year) => (
@@ -217,8 +275,11 @@ export function CatalogBrowser({ vehicles }: { vehicles: PublicVehicle[] }) {
                   ))}
                 </select>
               </label>
-              <label className="block space-y-2">
-                <span className="block text-sm font-semibold">Año hasta</span>
+
+              <label className="block space-y-1.5">
+                <span className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Año hasta
+                </span>
                 <select value={yearTo} onChange={(event) => setYearTo(event.target.value)} className={SELECT_CLASS}>
                   <option value="">Cualquiera</option>
                   {years.map((year) => (
@@ -230,38 +291,56 @@ export function CatalogBrowser({ vehicles }: { vehicles: PublicVehicle[] }) {
               </label>
             </div>
 
-            <Chips label="Transmisión" value={transmission} options={TRANSMISSION_CHIPS} onChange={setTransmission} />
-            {hasBothCurrencies ? (
-              <Chips label="Moneda" value={currency} options={CURRENCY_CHIPS} onChange={setCurrency} />
-            ) : null}
+            <div className="flex flex-wrap gap-6">
+              <Chips label="Transmisión" value={transmission} options={TRANSMISSION_CHIPS} onChange={setTransmission} />
+              {hasBothCurrencies ? (
+                <Chips label="Moneda" value={currency} options={CURRENCY_CHIPS} onChange={setCurrency} />
+              ) : null}
+            </div>
 
             {activeFilters > 0 || query ? (
-              <button
-                type="button"
-                onClick={resetFilters}
-                className="flex h-11 items-center gap-2 text-sm font-semibold underline underline-offset-4"
-              >
-                <X className="h-4 w-4" /> Limpiar filtros
-              </button>
+              <div className="border-t border-slate-100 pt-3 dark:border-white/5">
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" /> Restablecer filtros
+                </button>
+              </div>
             ) : null}
           </div>
         ) : null}
       </div>
 
-      <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400" aria-live="polite">
-        {visible.length} {visible.length === 1 ? "auto" : "autos"}
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 tabular-nums dark:text-slate-400" aria-live="polite">
+          {visible.length} {visible.length === 1 ? "unidad disponible" : "unidades disponibles"}
+        </p>
+        {(activeFilters > 0 || query) && !showFilters ? (
+          <button
+            type="button"
+            onClick={resetFilters}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+          >
+            <X className="h-3.5 w-3.5" /> Limpiar filtros
+          </button>
+        ) : null}
+      </div>
 
       {visible.length === 0 ? (
-        <div className="border border-dashed border-neutral-200 p-10 text-center dark:border-white/10 rounded-2xl">
-          <p className="text-lg font-semibold">
+        <div className="rounded-2xl border border-dashed border-slate-200 bg-white/60 p-12 text-center dark:border-white/10 dark:bg-white/[0.02]">
+          <p className="font-display text-lg font-semibold text-slate-900 dark:text-white">
             {vehicles.length === 0 ? "Pronto vamos a cargar nuevas unidades." : "No encontramos autos con esos filtros."}
+          </p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            {vehicles.length > 0 ? "Probá ampliando los criterios de búsqueda." : "Volvé a visitarnos en unos días."}
           </p>
           {vehicles.length > 0 ? (
             <button
               type="button"
               onClick={resetFilters}
-              className="mt-4 h-12 border px-6 font-semibold rounded-xl bg-white dark:bg-white/5"
+              className="mt-5 inline-flex h-11 items-center rounded-xl px-6 text-sm font-semibold shadow-2xs transition-opacity hover:opacity-90"
               style={BRAND_BUTTON_STYLE}
             >
               Ver todos los autos
@@ -269,9 +348,9 @@ export function CatalogBrowser({ vehicles }: { vehicles: PublicVehicle[] }) {
           ) : null}
         </div>
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {visible.map((vehicle, index) => (
-            <VehicleCard key={vehicle.id} vehicle={vehicle} priority={index < 2} />
+            <VehicleCard key={vehicle.id} vehicle={vehicle} priority={index < 3} />
           ))}
         </ul>
       )}

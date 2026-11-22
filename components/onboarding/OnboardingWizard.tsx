@@ -7,7 +7,6 @@ import { Check, ImagePlus, Loader2, X } from "lucide-react";
 import { checkSlugAvailability, completeOnboarding, type SlugStatus } from "@/app/onboarding/actions";
 import { CatalogPreview } from "@/components/onboarding/CatalogPreview";
 import { slugify, slugSchema } from "@/lib/slug";
-import { normalizeImageFile } from "@/lib/image-input";
 import { putWithProgress } from "@/lib/upload-client";
 import { MAX_LOGO_BYTES, type PresignedResponse } from "@/lib/validators/upload";
 import {
@@ -141,7 +140,7 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
     setLogoError(null);
     setLogoStatus("processing");
     try {
-      const compressed = await imageCompression(await normalizeImageFile(file), {
+      const compressed = await imageCompression(file, {
         maxWidthOrHeight: 512,
         initialQuality: 0.9,
         fileType: "image/webp",
@@ -363,7 +362,7 @@ export function OnboardingWizard({ initial, rootDomain }: OnboardingWizardProps)
               <input
                 ref={logoInputRef}
                 type="file"
-                accept="image/*,.heic,.heif"
+                accept="image/*"
                 hidden
                 onChange={(event) => {
                   const file = event.target.files?.[0];

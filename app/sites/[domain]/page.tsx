@@ -15,12 +15,16 @@ export default async function SiteHomePage({ params }: { params: Promise<{ domai
   const vehicles = await getPublicVehicles(tenant.id);
 
   return (
-    <main className="mx-auto max-w-6xl space-y-6 px-4 py-6">
-      <header className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl font-display">Autos usados</h1>
-        <p className="text-neutral-600 dark:text-neutral-400">
-          {tenant.city ? `${tenant.city} · ` : ""}Consultá por WhatsApp, respondemos al instante.
-        </p>
+    <main className="mx-auto max-w-6xl space-y-6 px-4 py-8 sm:px-6">
+      <header className="flex flex-col gap-1.5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
+            Vehículos disponibles
+          </h1>
+          <p className="mt-1 text-sm text-slate-600 sm:text-base dark:text-slate-400">
+            {tenant.city ? `Unidades seleccionadas en ${tenant.city}. ` : ""}Consultá directamente por WhatsApp.
+          </p>
+        </div>
       </header>
       <CatalogBrowser vehicles={vehicles} />
     </main>

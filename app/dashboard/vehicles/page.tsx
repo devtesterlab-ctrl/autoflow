@@ -2,6 +2,7 @@ import { PlanBanner } from "@/components/dashboard/PlanBanner";
 import { VehicleInventory, type InventoryVehicle } from "@/components/dashboard/VehicleInventory";
 import { getPlanUsage } from "@/lib/plan-limits";
 import { requireTenant } from "@/lib/session";
+import { getTenantOrigin } from "@/lib/site-url";
 
 export default async function VehiclesPage() {
   const { db, tenant } = await requireTenant();
@@ -51,6 +52,7 @@ export default async function VehiclesPage() {
       <PlanBanner usage={usage} agencyName={tenant.name} />
       <VehicleInventory
         vehicles={vehicles}
+        catalogOrigin={getTenantOrigin(tenant)}
         branding={{
           name: tenant.name,
           primaryColor: tenant.primaryColor,

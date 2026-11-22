@@ -1,22 +1,28 @@
 import Link from "next/link";
+import { CarFront } from "lucide-react";
 
 export default function SiteNotFound() {
   return (
     <main className="mx-auto flex min-h-[60dvh] max-w-md flex-col items-center justify-center gap-4 px-6 text-center">
-      <h1 className="text-3xl font-bold font-display">No encontramos este auto</h1>
-      <p className="text-neutral-600 dark:text-neutral-400">
-        Puede que ya se haya vendido o que el link esté incompleto.
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-400 shadow-2xs dark:border-white/10 dark:bg-white/5">
+        <CarFront className="h-7 w-7" />
+      </div>
+      <h1 className="font-display text-2xl font-bold text-slate-900 sm:text-3xl dark:text-white">
+        No encontramos este vehículo
+      </h1>
+      <p className="text-sm text-slate-600 sm:text-base dark:text-slate-400">
+        Puede que ya se haya vendido o que el enlace esté incompleto.
       </p>
       <Link
         href="/"
-        className="flex h-12 items-center border px-6 font-bold rounded-xl bg-white dark:bg-white/5"
+        className="mt-2 inline-flex h-11 items-center rounded-xl px-6 text-sm font-semibold shadow-2xs transition-opacity hover:opacity-90"
         style={{
           backgroundColor: "var(--brand-primary)",
           color: "var(--brand-primary-foreground)",
           borderColor: "var(--brand-primary)",
         }}
       >
-        Ver todos los autos
+        Ver todos los vehículos
       </Link>
     </main>
   );

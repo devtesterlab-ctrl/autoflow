@@ -27,8 +27,10 @@ export function Segmented<T extends string>({
   columns = 2,
 }: SegmentedProps<T>) {
   return (
-    <div role="group" aria-label={label} className="space-y-2">
-      <span className="block text-sm font-medium">{label}</span>
+    <div role="group" aria-label={label} className="space-y-1.5">
+      <span className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        {label}
+      </span>
       <div className={`grid gap-2 ${COLUMN_CLASSES[columns]}`}>
         {options.map((option) => {
           const selected = option.value === value;
@@ -38,11 +40,11 @@ export function Segmented<T extends string>({
               type="button"
               aria-pressed={selected}
               onClick={() => onChange(option.value)}
-              className={`h-12 border px-3 text-base font-semibold active:scale-[0.98] ${
+              className={`h-10 rounded-xl border px-3 text-sm font-semibold transition-all active:scale-[0.98] ${
                 selected
-                  ? "border-transparent bg-neutral-900 text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
-                  : "border-neutral-200 bg-transparent dark:border-white/10"
-              } transition rounded-xl`}
+                  ? "border-transparent bg-slate-900 text-white shadow-2xs dark:bg-white dark:text-slate-900"
+                  : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
+              }`}
             >
               {option.label}
             </button>

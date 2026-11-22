@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Pencil, Plus, Search, Share2, Trash2 } from "lucide-react";
+import { Check, Link2, Pencil, Plus, Search, Share2, Trash2 } from "lucide-react";
 import { deleteVehicle, setVehicleStatus } from "@/app/dashboard/vehicles/actions";
 import { InstagramStoryGenerator, type StoryBranding } from "@/components/dashboard/InstagramStoryGenerator";
 import {
@@ -46,15 +46,18 @@ const normalize = (value: string) =>
 export function VehicleInventory({
   vehicles,
   branding,
+  catalogOrigin,
 }: {
   vehicles: InventoryVehicle[];
   branding: StoryBranding;
+  catalogOrigin: string;
 }) {
   const [items, setItems] = useState<InventoryVehicle[]>(vehicles);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("ALL");
   const [message, setMessage] = useState<string | null>(null);
   const [storyVehicle, setStoryVehicle] = useState<InventoryVehicle | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => setItems(vehicles), [vehicles]);
 
@@ -73,6 +76,17 @@ export function VehicleInventory({
       return tokens.every((token) => haystack.includes(token));
     });
   }, [items, query, filter]);
+
+  async function copyVehicleLink(id: string) {
+    const url = `${catalogOrigin}/auto/${id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedId(id);
+      window.setTimeout(() => setCopiedId(null), 2000);
+    } catch {
+      window.prompt("Copiá este link:", url);
+    }
+  }
 
   async function changeStatus(id: string, status: StatusValue) {
     const previous = items.find((item) => item.id === id)?.status;
@@ -172,6 +186,17 @@ export function VehicleInventory({
           {visible.map((item) => (
             <li key={item.id} className="flex flex-col overflow-hidden border border-neutral-200 dark:border-white/10 rounded-2xl shadow-sm">
               <div className="relative aspect-[4/3] bg-neutral-200 dark:bg-neutral-800">
+                {item.status === "AVAILABLE" || item.status === "RESERVED" ? (
+                  <button
+                    type="button"
+                    onClick={() => void copyVehicleLink(item.id)}
+                    aria-label="Copiar link público de este auto"
+                    className="absolute bottom-2 right-2 z-10 flex h-9 items-center gap-1.5 rounded-full bg-white/85 px-3 text-xs font-semibold text-neutral-900 shadow-sm backdrop-blur transition active:scale-[0.98] dark:bg-neutral-900/80 dark:text-white"
+                  >
+                    {copiedId === item.id ? <Check className="h-3.5 w-3.5" /> : <Link2 className="h-3.5 w-3.5" />}
+                    {copiedId === item.id ? "Copiado" : "Copiar link"}
+                  </button>
+                ) : null}
                 {item.coverUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={item.coverUrl} alt={`${item.brand} ${item.model}`} loading="lazy" className="h-full w-full object-cover" />

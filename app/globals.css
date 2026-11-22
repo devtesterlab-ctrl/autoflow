@@ -12,17 +12,17 @@
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
   }
 
-  /* Un resplandor muy suave arriba: da profundidad sin recargar */
   body {
-    background-image: radial-gradient(60rem 26rem at 50% -8rem, rgb(15 23 42 / 0.05), transparent 70%);
+    background-image: radial-gradient(70rem 30rem at 50% -10rem, rgb(15 23 42 / 0.035), transparent 75%);
     background-repeat: no-repeat;
   }
 
   @media (prefers-color-scheme: dark) {
     body {
-      background-image: radial-gradient(60rem 26rem at 50% -8rem, rgb(255 255 255 / 0.06), transparent 70%);
+      background-image: radial-gradient(70rem 30rem at 50% -10rem, rgb(255 255 255 / 0.04), transparent 75%);
     }
   }
 
@@ -30,10 +30,9 @@
   h2,
   h3 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
   }
 
-  /* Tailwind 4 ya no pone cursor de mano en los botones */
   button:not(:disabled),
   [role="button"],
   summary {
@@ -41,6 +40,16 @@
   }
 
   ::selection {
-    background: rgb(99 102 241 / 0.25);
+    background: rgb(15 23 42 / 0.14);
   }
+
+  @media (prefers-color-scheme: dark) {
+    ::selection {
+      background: rgb(255 255 255 / 0.18);
+    }
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
 }

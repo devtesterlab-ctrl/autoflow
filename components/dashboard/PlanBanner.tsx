@@ -1,11 +1,6 @@
 import { PLAN_LIMITS, type PlanUsage } from "@/lib/plan-config";
 import { buildWhatsappUrl, normalizeWhatsappNumber } from "@/lib/whatsapp";
 
-/**
- * Uso del plan + aviso de límite. Variables de entorno (opcionales):
- *  - NEXT_PUBLIC_UPGRADE_WHATSAPP: WhatsApp de ventas de AutoFlow (formato internacional)
- *  - NEXT_PUBLIC_UPGRADE_PAYMENT_URL: link de pago / checkout (https)
- */
 export function PlanBanner({ usage, agencyName }: { usage: PlanUsage; agencyName: string }) {
   const percent = Math.min(100, Math.round((usage.activeVehicles / usage.maxActiveVehicles) * 100));
   const nextLabel = usage.nextPlan ? PLAN_LIMITS[usage.nextPlan].label : null;
@@ -24,19 +19,25 @@ export function PlanBanner({ usage, agencyName }: { usage: PlanUsage; agencyName
   const remaining = usage.maxActiveVehicles - usage.activeVehicles;
 
   const tone = blocked
-    ? "border-red-300 bg-red-50 dark:bg-red-950 dark:border-red-800"
+    ? "border-red-200 bg-red-50/80 dark:border-red-900/60 dark:bg-red-950/40"
     : warning
-      ? "border-amber-300 bg-amber-50 dark:bg-amber-950 dark:border-amber-700"
-      : "border-neutral-200 dark:border-white/10";
-  const barColor = blocked ? "bg-red-600" : warning ? "bg-amber-500" : "bg-neutral-900 dark:bg-white hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors";
+      ? "border-amber-200 bg-amber-50/80 dark:border-amber-900/60 dark:bg-amber-950/40"
+      : "border-slate-200/90 bg-white dark:border-white/10 dark:bg-[#11131C]";
+  const barColor = blocked
+    ? "bg-red-600"
+    : warning
+      ? "bg-amber-500"
+      : "bg-slate-900 dark:bg-white";
 
   return (
-    <section aria-label="Uso del plan" className={`space-y-3 border p-4 ${tone} rounded-2xl`}>
+    <section aria-label="Uso del plan" className={`space-y-3 rounded-2xl border p-4 shadow-2xs ${tone}`}>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm font-semibold uppercase tracking-wider">Plan {usage.label}</p>
-        <p className="text-sm font-semibold">
-          {usage.activeVehicles} / {usage.maxActiveVehicles} autos activos
-        </p>
+        <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          Plan {usage.label}
+        </span>
+        <span className="text-xs font-bold text-slate-800 tabular-nums dark:text-slate-200">
+          {usage.activeVehicles} / {usage.maxActiveVehicles} unidades activas
+        </span>
       </div>
 
       <div
@@ -45,16 +46,15 @@ export function PlanBanner({ usage, agencyName }: { usage: PlanUsage; agencyName
         aria-valuemax={usage.maxActiveVehicles}
         aria-valuenow={usage.activeVehicles}
         aria-label="Autos activos"
-        className="h-2.5 overflow-hidden rounded-full border border-neutral-200 bg-white dark:border-white/10 dark:bg-neutral-800"
+        className="h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-white/10"
       >
-        <div className={`h-full rounded-full ${barColor}`} style={{ width: `${percent}%` }} />
+        <div className={`h-full rounded-full transition-all duration-300 ${barColor}`} style={{ width: `${percent}%` }} />
       </div>
 
       {blocked ? (
-        <div className="space-y-3">
-          <p className="font-semibold text-red-700 dark:text-red-300">
-            Llegaste al límite de autos activos de tu plan. No podés publicar más hasta liberar lugar
-            (pasando un auto a Vendido o En preparación) o ampliar el plan.
+        <div className="space-y-3 pt-1">
+          <p className="text-xs font-semibold leading-relaxed text-red-700 dark:text-red-300">
+            Alcanzaste el límite de autos activos de tu plan. Pasá una unidad a Vendido/Preparación o ampliá tu plan para seguir publicando.
           </p>
           <div className="flex flex-col gap-2 sm:flex-row">
             {whatsappHref ? (
@@ -62,9 +62,9 @@ export function PlanBanner({ usage, agencyName }: { usage: PlanUsage; agencyName
                 href={whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-12 items-center justify-center border border-emerald-700 bg-emerald-600 px-5 font-semibold text-white rounded-xl"
+                className="inline-flex h-10 items-center justify-center rounded-xl bg-emerald-600 px-4 text-xs font-bold text-white transition-colors hover:bg-emerald-700"
               >
-                {nextLabel ? `Pedir upgrade a ${nextLabel} por WhatsApp` : "Hablar con ventas por WhatsApp"}
+                {nextLabel ? `Ampliar a ${nextLabel} por WhatsApp` : "Contactar soporte por WhatsApp"}
               </a>
             ) : null}
             {paymentHref ? (
@@ -72,19 +72,21 @@ export function PlanBanner({ usage, agencyName }: { usage: PlanUsage; agencyName
                 href={paymentHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-12 items-center justify-center border border-transparent bg-neutral-900 px-5 font-semibold text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
+                className="inline-flex h-10 items-center justify-center rounded-xl bg-slate-900 px-4 text-xs font-bold text-white transition-colors hover:bg-slate-800 dark:bg-white dark:text-slate-900"
               >
-                Ver planes y pagar
+                Ver planes
               </a>
             ) : null}
             {!whatsappHref && !paymentHref ? (
-              <p className="text-sm font-medium">Escribile al soporte de AutoFlow para ampliar tu plan.</p>
+              <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                Contactá al soporte de AutoFlow para ampliar tu plan.
+              </p>
             ) : null}
           </div>
         </div>
       ) : warning ? (
-        <p className="text-sm font-medium">
-          Te {remaining === 1 ? "queda 1 lugar" : `quedan ${remaining} lugares`} para publicar autos.
+        <p className="text-xs font-medium text-amber-800 dark:text-amber-300">
+          Te {remaining === 1 ? "queda 1 cupo" : `quedan ${remaining} cupos`} disponible{remaining === 1 ? "" : "s"} en tu plan.
         </p>
       ) : null}
     </section>

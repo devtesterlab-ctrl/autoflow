@@ -2,8 +2,10 @@ import { randomBytes, timingSafeEqual } from "node:crypto";
 import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
 import { headers } from "next/headers";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Prisma } from "@prisma/client";
+import { CarFront } from "lucide-react";
 import { z } from "zod";
 import { signIn } from "@/auth";
 import { prisma } from "@/lib/db";
@@ -82,72 +84,82 @@ async function registerAction(formData: FormData) {
 }
 
 const INPUT_CLASS =
-  "h-12 w-full border border-neutral-300 bg-white px-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl";
+  "h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm text-slate-900 outline-none transition-all focus:border-slate-400 focus:ring-4 focus:ring-slate-900/5 dark:border-white/10 dark:bg-white/5 dark:text-white dark:focus:border-white/30";
 
 export default async function RegisterPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const { error } = await searchParams;
   const inviteRequired = Boolean(process.env.REGISTRATION_INVITE_CODE);
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-8 px-6 py-10">
-      <header className="space-y-2">
-        <h1 className="text-3xl font-semibold tracking-tight font-display">Crear cuenta</h1>
-        <p className="text-neutral-600 dark:text-neutral-400">Tu catálogo y tu CRM en menos de 2 minutos.</p>
-      </header>
+    <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-6 px-4 py-10 sm:px-6">
+      <div className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs sm:p-8 dark:border-white/10 dark:bg-[#11131C]">
+        <header className="mb-6 space-y-2">
+          <Link href="/" className="mb-4 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
+            <CarFront className="h-4 w-4" /> AutoFlow
+          </Link>
+          <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-white">
+            Crear cuenta
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Tu catálogo y tu CRM en menos de 2 minutos.</p>
+        </header>
 
-      <form action={registerAction} className="space-y-4">
-        <label className="block space-y-1">
-          <span className="text-sm font-medium">Tu nombre</span>
-          <input name="name" required autoComplete="name" className={INPUT_CLASS} />
-        </label>
-        <label className="block space-y-1">
-          <span className="text-sm font-medium">Nombre de la agencia</span>
-          <input name="agencyName" required autoComplete="organization" className={INPUT_CLASS} />
-        </label>
-        <label className="block space-y-1">
-          <span className="text-sm font-medium">Email</span>
-          <input name="email" type="email" required autoComplete="email" inputMode="email" className={INPUT_CLASS} />
-        </label>
-        <label className="block space-y-1">
-          <span className="text-sm font-medium">Contraseña</span>
-          <input name="password" type="password" required minLength={8} autoComplete="new-password" className={INPUT_CLASS} />
-        </label>
-        {inviteRequired ? (
-          <label className="block space-y-1">
-            <span className="text-sm font-medium">Código de invitación</span>
-            <input name="inviteCode" required autoComplete="off" className={INPUT_CLASS} />
+        <form action={registerAction} className="space-y-4">
+          <label className="block space-y-1.5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Tu nombre</span>
+            <input name="name" required autoComplete="name" className={INPUT_CLASS} />
           </label>
-        ) : null}
+          <label className="block space-y-1.5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Nombre de la agencia</span>
+            <input name="agencyName" required autoComplete="organization" className={INPUT_CLASS} />
+          </label>
+          <label className="block space-y-1.5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Email</span>
+            <input name="email" type="email" required autoComplete="email" inputMode="email" className={INPUT_CLASS} />
+          </label>
+          <label className="block space-y-1.5">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Contraseña</span>
+            <input name="password" type="password" required minLength={8} autoComplete="new-password" className={INPUT_CLASS} />
+          </label>
+          {inviteRequired ? (
+            <label className="block space-y-1.5">
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Código de invitación</span>
+              <input name="inviteCode" required autoComplete="off" className={INPUT_CLASS} />
+            </label>
+          ) : null}
 
-        <label className="flex items-start gap-3 text-sm">
-          <input type="checkbox" name="acceptTerms" required className="mt-0.5 h-5 w-5 shrink-0" />
-          <span>
-            Acepto los{" "}
-            <a href="/terminos" target="_blank" className="font-semibold underline underline-offset-4">
-              términos y condiciones
-            </a>{" "}
-            y la{" "}
-            <a href="/privacidad" target="_blank" className="font-semibold underline underline-offset-4">
-              política de privacidad
-            </a>
-            .
-          </span>
-        </label>
+          <label className="flex items-start gap-2.5 pt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+            <input type="checkbox" name="acceptTerms" required className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300" />
+            <span>
+              Acepto los{" "}
+              <a href="/terminos" target="_blank" className="font-semibold text-slate-900 underline underline-offset-4 dark:text-white">
+                términos y condiciones
+              </a>{" "}
+              y la{" "}
+              <a href="/privacidad" target="_blank" className="font-semibold text-slate-900 underline underline-offset-4 dark:text-white">
+                política de privacidad
+              </a>
+              .
+            </span>
+          </label>
 
-        {error ? (
-          <p role="alert" className="border border-red-300 bg-red-50 p-3 text-sm font-medium text-red-700 dark:bg-red-950 dark:text-red-300 dark:border-red-800 rounded-2xl">
-            {ERROR_MESSAGES[error] ?? ERROR_MESSAGES.server}
-          </p>
-        ) : null}
+          {error ? (
+            <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-semibold text-red-700 dark:border-red-900/60 dark:bg-red-950/60 dark:text-red-300">
+              {ERROR_MESSAGES[error] ?? ERROR_MESSAGES.server}
+            </p>
+          ) : null}
 
-        <button type="submit" className="h-12 w-full border border-transparent bg-neutral-900 text-base font-semibold text-white active:scale-[0.98] dark:border-transparent dark:bg-white dark:text-neutral-900 transition hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl">
-          Crear mi cuenta
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="mt-2 h-11 w-full rounded-xl bg-slate-900 text-sm font-semibold text-white shadow-2xs transition-all hover:bg-slate-800 active:scale-[0.98] dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+          >
+            Crear mi cuenta
+          </button>
+        </form>
+      </div>
 
-      <p className="text-sm text-neutral-600 dark:text-neutral-400">
+      <p className="text-center text-xs text-slate-500 dark:text-slate-400">
         ¿Ya tenés cuenta?{" "}
-        <a href="/login" className="font-semibold underline underline-offset-4">
+        <a href="/login" className="font-semibold text-slate-900 underline underline-offset-4 dark:text-white">
           Ingresar
         </a>
       </p>

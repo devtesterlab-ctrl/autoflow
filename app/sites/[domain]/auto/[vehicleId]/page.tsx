@@ -2,7 +2,7 @@ import { cache } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Check } from "lucide-react";
+import { ArrowLeft, Calendar, Check, Fuel, Gauge, Settings2 } from "lucide-react";
 import { FinanceCalculator } from "@/components/catalog/FinanceCalculator";
 import { InquiryButton } from "@/components/catalog/InquiryButton";
 import { VehicleGallery } from "@/components/catalog/VehicleGallery";
@@ -14,7 +14,6 @@ import { normalizeWhatsappNumber } from "@/lib/whatsapp";
 
 type PageProps = { params: Promise<{ domain: string; vehicleId: string }> };
 
-/** Compartida entre generateMetadata y la página. Los datos salen de la caché por agencia. */
 const loadVehicle = cache(async (domain: string, vehicleId: string) => {
   if (!PUBLIC_ID_PATTERN.test(vehicleId)) return null;
 
@@ -74,13 +73,22 @@ export default async function VehiclePage({ params }: PageProps) {
   const reserved = vehicle.status === "RESERVED";
   const canContact = normalizeWhatsappNumber(tenant.whatsappNumber) !== null;
 
+  const keyHighlights = [
+    { icon: Calendar, label: "Año", value: String(vehicle.year) },
+    { icon: Gauge, label: "Kilometraje", value: formatKm(vehicle.mileage) },
+    { icon: Settings2, label: "Caja", value: TRANSMISSION_LABELS[vehicle.transmission] },
+    { icon: Fuel, label: "Combustible", value: FUEL_LABELS[vehicle.fuelType] },
+  ];
+
   const specs: { label: string; value: string }[] = [
+    { label: "Marca", value: vehicle.brand },
+    { label: "Modelo", value: vehicle.model },
+    ...(vehicle.version ? [{ label: "Versión", value: vehicle.version }] : []),
     { label: "Año", value: String(vehicle.year) },
     { label: "Kilometraje", value: formatKm(vehicle.mileage) },
     { label: "Transmisión", value: TRANSMISSION_LABELS[vehicle.transmission] },
     { label: "Combustible", value: FUEL_LABELS[vehicle.fuelType] },
     ...(vehicle.color ? [{ label: "Color", value: vehicle.color }] : []),
-    ...(vehicle.version ? [{ label: "Versión", value: vehicle.version }] : []),
   ];
 
   const jsonLd = {
@@ -105,84 +113,64 @@ export default async function VehiclePage({ params }: PageProps) {
   };
 
   return (
-    <main className="mx-auto max-w-6xl px-4 pb-32 pt-4 lg:pb-12">
+    <main className="mx-auto max-w-6xl px-4 pb-32 pt-6 sm:px-6 lg:pb-16">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\u003c") }}
       />
 
-      <Link href="/" className="mb-4 inline-flex h-11 items-center gap-2 text-sm font-semibold underline underline-offset-4">
-        <ArrowLeft className="h-4 w-4" /> Volver al catálogo
-      </Link>
+      <nav aria-label="Navegación" className="mb-5">
+        <Link
+          href="/"
+          className="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200/80 bg-white px-3.5 text-sm font-semibold text-slate-700 shadow-2xs transition-colors hover:border-slate-300 hover:text-slate-900 dark:border-white/10 dark:bg-[#11131C] dark:text-slate-300 dark:hover:text-white"
+        >
+          <ArrowLeft className="h-4 w-4" /> Volver al catálogo
+        </Link>
+      </nav>
 
-      <div className="grid gap-6 lg:grid-cols-[3fr_2fr] lg:gap-x-8">
-        <div className="min-w-0 lg:col-start-1 lg:row-start-1">
+      <div className="grid gap-8 lg:grid-cols-[1.45fr_1fr] lg:items-start lg:gap-10">
+        {/* Columna izquierda: Galería + Ficha técnica + Equipamiento + Descripción */}
+        <div className="min-w-0 space-y-8">
           <VehicleGallery
             images={vehicle.images.map((image) => ({ id: image.id, url: image.url }))}
             alt={`${title} ${vehicle.year}`}
             reserved={reserved}
           />
-        </div>
 
-        <aside className="space-y-5 lg:sticky lg:top-24 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start">
-          <div className="space-y-3">
-            {reserved ? (
-              <span className="inline-block bg-amber-400 px-3 py-1.5 text-xs font-bold tracking-wider text-black rounded-md">
-                RESERVADO
-              </span>
-            ) : null}
-            <h1 className="text-3xl font-bold leading-tight tracking-tight font-display">{title}</h1>
-            <ul className="flex flex-wrap gap-2 text-sm font-semibold">
-              <li className="border border-neutral-200 px-3 py-1 dark:border-white/10 rounded-xl">{vehicle.year}</li>
-              <li className="border border-neutral-200 px-3 py-1 dark:border-white/10 rounded-xl">{formatKm(vehicle.mileage)}</li>
-              <li className="border border-neutral-200 px-3 py-1 dark:border-white/10 rounded-xl">
-                {TRANSMISSION_LABELS[vehicle.transmission]}
-              </li>
-            </ul>
-            <p className="text-4xl font-bold tracking-tight font-display">{priceLabel}</p>
-          </div>
-
-          <InquiryButton
-            domain={domain}
-            vehicleId={vehicle.id}
-            vehicleTitle={`${title} ${vehicle.year}`}
-            priceLabel={priceLabel}
-            canContact={canContact}
-          />
-
-          <FinanceCalculator price={price} currency={vehicle.currency} />
-        </aside>
-
-        <div className="min-w-0 space-y-8 lg:col-start-1 lg:row-start-2">
-          <section aria-labelledby="specs-title" className="space-y-3">
-            <h2 id="specs-title" className="text-xl font-bold font-display">
+          <section aria-labelledby="specs-title" className="space-y-4 rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 dark:border-white/10 dark:bg-[#11131C]">
+            <h2 id="specs-title" className="font-display text-lg font-bold text-slate-900 dark:text-white">
               Ficha técnica
             </h2>
-            <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-200 dark:border-white/10 dark:bg-white/10">
+            <dl className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
               {specs.map((spec) => (
-                <div key={spec.label} className="bg-white p-4 dark:bg-neutral-950">
-                  <dt className="text-xs font-semibold uppercase tracking-wide text-neutral-600 dark:text-neutral-400">
+                <div key={spec.label} className="space-y-0.5 border-b border-slate-100 pb-3 dark:border-white/5">
+                  <dt className="text-xs font-medium text-slate-500 dark:text-slate-400">
                     {spec.label}
                   </dt>
-                  <dd className="text-base font-bold">{spec.value}</dd>
+                  <dd className="text-sm font-semibold text-slate-900 tabular-nums dark:text-white">{spec.value}</dd>
                 </div>
               ))}
             </dl>
           </section>
 
           {vehicle.features.length > 0 ? (
-            <section aria-labelledby="features-title" className="space-y-3">
-              <h2 id="features-title" className="text-xl font-bold font-display">
-                Equipamiento
+            <section aria-labelledby="features-title" className="space-y-4 rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 dark:border-white/10 dark:bg-[#11131C]">
+              <h2 id="features-title" className="font-display text-lg font-bold text-slate-900 dark:text-white">
+                Equipamiento destacado
               </h2>
-              <ul className="flex flex-wrap gap-2">
+              <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                 {vehicle.features.map((feature) => (
                   <li
                     key={feature}
-                    className="flex items-center gap-2 border px-3 py-2 text-sm font-semibold rounded-xl"
-                    style={{ borderColor: "var(--brand-primary)" }}
+                    className="flex items-center gap-2.5 rounded-xl bg-slate-50/80 px-3.5 py-2.5 text-sm font-medium text-slate-800 dark:bg-white/[0.03] dark:text-slate-200"
                   >
-                    <Check className="h-4 w-4" /> {feature}
+                    <span
+                      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full"
+                      style={{ backgroundColor: "var(--brand-primary)", color: "var(--brand-primary-foreground)" }}
+                    >
+                      <Check className="h-3 w-3 stroke-[3]" />
+                    </span>
+                    <span>{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -190,14 +178,68 @@ export default async function VehiclePage({ params }: PageProps) {
           ) : null}
 
           {vehicle.description ? (
-            <section aria-labelledby="description-title" className="space-y-3">
-              <h2 id="description-title" className="text-xl font-bold font-display">
-                Descripción
+            <section aria-labelledby="description-title" className="space-y-3 rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 dark:border-white/10 dark:bg-[#11131C]">
+              <h2 id="description-title" className="font-display text-lg font-bold text-slate-900 dark:text-white">
+                Comentarios de la agencia
               </h2>
-              <p className="whitespace-pre-line leading-relaxed">{vehicle.description}</p>
+              <p className="whitespace-pre-line text-sm leading-relaxed text-slate-600 sm:text-base dark:text-slate-300">
+                {vehicle.description}
+              </p>
             </section>
           ) : null}
         </div>
+
+        {/* Columna derecha sticky: Resumen, Grilla 2x2, CTA WhatsApp y Calculadora */}
+        <aside className="space-y-5 lg:sticky lg:top-24">
+          <div className="space-y-5 rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs sm:p-6 dark:border-white/10 dark:bg-[#11131C]">
+            <div className="space-y-2">
+              {reserved ? (
+                <span className="inline-block rounded-full bg-amber-400 px-3 py-1 text-[11px] font-bold tracking-wider text-slate-950">
+                  RESERVADO
+                </span>
+              ) : null}
+              <h1 className="font-display text-2xl font-bold leading-tight tracking-tight text-slate-900 sm:text-3xl dark:text-white">
+                {title}
+              </h1>
+              <p className="font-display text-3xl font-bold tracking-tight text-slate-900 tabular-nums sm:text-4xl dark:text-white">
+                {priceLabel}
+              </p>
+            </div>
+
+            {/* 4 datos clave en grilla 2x2 */}
+            <div className="grid grid-cols-2 gap-2.5">
+              {keyHighlights.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={item.label}
+                    className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50/90 p-3 dark:border-white/5 dark:bg-white/[0.03]"
+                  >
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-slate-500 shadow-2xs dark:bg-white/5 dark:text-slate-400">
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">{item.label}</p>
+                      <p className="truncate text-sm font-bold text-slate-900 tabular-nums dark:text-white">
+                        {item.value}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <InquiryButton
+              domain={domain}
+              vehicleId={vehicle.id}
+              vehicleTitle={`${title} ${vehicle.year}`}
+              priceLabel={priceLabel}
+              canContact={canContact}
+            />
+          </div>
+
+          <FinanceCalculator price={price} currency={vehicle.currency} />
+        </aside>
       </div>
     </main>
   );

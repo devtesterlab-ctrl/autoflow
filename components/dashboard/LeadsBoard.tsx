@@ -25,9 +25,8 @@ type DrawerState = { mode: "create" } | { mode: "edit"; leadId: string } | null;
 type PromptState = { type: "won" | "close"; leadId: string } | null;
 
 const normalize = (value: string) =>
-  value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  value.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
-/** `now` arranca en null para no desfasar el HTML del servidor con el del cliente. */
 function useNow(): number | null {
   const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
@@ -38,7 +37,6 @@ function useNow(): number | null {
   return now;
 }
 
-/** Con seguimiento primero (el más viejo/vencido arriba); el resto por antigüedad de consulta. */
 function sortLeads(items: LeadDTO[], closed: boolean): LeadDTO[] {
   return [...items].sort((a, b) => {
     if (!closed) {
@@ -52,11 +50,11 @@ function sortLeads(items: LeadDTO[], closed: boolean): LeadDTO[] {
 
 function Sheet(props: { title: string; body?: string; children: React.ReactNode }) {
   return (
-    <div role="dialog" aria-modal="true" aria-label={props.title} className="fixed inset-0 z-[60] flex items-end justify-center bg-black/40 sm:items-center backdrop-blur-sm">
-      <div className="w-full max-w-md space-y-4 border border-neutral-200 bg-white/85 p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] sm:pb-5 dark:border-white/10 dark:bg-neutral-950/80 shadow-2xl rounded-t-3xl sm:rounded-3xl">
-        <h2 className="text-xl font-semibold font-display">{props.title}</h2>
-        {props.body ? <p className="text-neutral-700 dark:text-neutral-300">{props.body}</p> : null}
-        <div className="space-y-3">{props.children}</div>
+    <div role="dialog" aria-modal="true" aria-label={props.title} className="fixed inset-0 z-[60] flex items-end justify-center bg-slate-950/50 backdrop-blur-xs sm:items-center sm:p-4">
+      <div className="w-full max-w-md space-y-4 rounded-t-3xl border border-slate-200/80 bg-white p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-2xl sm:rounded-3xl sm:pb-6 dark:border-white/10 dark:bg-[#11131C]">
+        <h2 className="font-display text-xl font-bold text-slate-900 dark:text-white">{props.title}</h2>
+        {props.body ? <p className="text-sm text-slate-600 dark:text-slate-300">{props.body}</p> : null}
+        <div className="space-y-2.5 pt-1">{props.children}</div>
       </div>
     </div>
   );
@@ -185,44 +183,47 @@ export function LeadsBoard({ leads: initialLeads, vehicles, tenantName }: LeadsB
   const promptLead = prompt ? leads.find((lead) => lead.id === prompt.leadId) ?? null : null;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight font-display">Leads</h1>
+        <div>
+          <h1 className="font-display text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Leads</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Seguimiento de consultas y oportunidades.</p>
+        </div>
         <button
           type="button"
           onClick={() => setDrawer({ mode: "create" })}
-          className="flex h-12 items-center gap-2 border border-transparent bg-neutral-900 px-5 text-base font-semibold text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
+          className="inline-flex h-11 items-center gap-2 rounded-xl bg-slate-900 px-5 text-sm font-semibold text-white shadow-2xs transition-colors hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
         >
-          <Plus className="h-5 w-5" /> Nuevo lead
+          <Plus className="h-4 w-4" /> Nuevo lead
         </button>
       </div>
 
       {overdueCount > 0 ? (
-        <p className="flex items-center gap-2 border border-red-300 bg-red-50 p-3 text-sm font-semibold text-red-700 dark:bg-red-950 dark:text-red-300 dark:border-red-800 rounded-2xl">
+        <p className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50/90 p-3 text-xs font-semibold text-red-700 dark:border-red-900/60 dark:bg-red-950/60 dark:text-red-300">
           <AlertTriangle className="h-4 w-4 shrink-0" />
           {overdueCount === 1 ? "Tenés 1 seguimiento vencido." : `Tenés ${overdueCount} seguimientos vencidos.`}
         </p>
       ) : null}
 
       {message ? (
-        <p role="alert" className="border border-red-300 bg-red-50 p-3 text-sm font-medium text-red-700 dark:bg-red-950 dark:text-red-300 dark:border-red-800 rounded-2xl">
+        <p role="alert" className="rounded-xl border border-red-200 bg-red-50/90 p-3 text-xs font-semibold text-red-700 dark:border-red-900/60 dark:bg-red-950/60 dark:text-red-300">
           {message}
         </p>
       ) : null}
 
       <label className="relative block">
         <span className="sr-only">Buscar leads</span>
-        <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2" />
+        <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
         <input
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Buscar por nombre, teléfono o auto"
-          className="h-12 w-full border border-neutral-300 bg-white pl-12 pr-4 text-base outline-none focus:ring-4 focus:ring-neutral-900/10 dark:border-white/20 dark:focus:ring-white/10 dark:bg-white/5 focus:border-neutral-400 dark:focus:border-white/40 rounded-xl"
+          placeholder="Buscar por nombre, teléfono o vehículo..."
+          className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-4 text-sm text-slate-900 shadow-2xs outline-none transition-all placeholder:text-slate-400 focus:border-slate-400 focus:ring-4 focus:ring-slate-900/5 dark:border-white/10 dark:bg-[#11131C] dark:text-white dark:focus:border-white/30"
         />
       </label>
 
-      <div className="-mx-4 overflow-x-auto px-4 lg:hidden">
+      <div className="-mx-4 overflow-x-auto px-4 [scrollbar-width:none] lg:hidden [&::-webkit-scrollbar]:hidden">
         <ul className="flex gap-2">
           {columns.map(({ column, items }, index) => {
             const selected = tab === index;
@@ -233,14 +234,14 @@ export function LeadsBoard({ leads: initialLeads, vehicles, tenantName }: LeadsB
                   type="button"
                   aria-pressed={selected}
                   onClick={() => goToTab(index)}
-                  className={`relative h-11 whitespace-nowrap border px-4 text-sm font-semibold ${
+                  className={`relative h-9 whitespace-nowrap rounded-full border px-4 text-xs font-semibold tabular-nums transition-all ${
                     selected
-                      ? "border-transparent bg-neutral-900 text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
-                      : "border-neutral-200 dark:border-white/10"
-                  } rounded-xl`}
+                      ? "border-transparent bg-slate-900 text-white shadow-2xs dark:bg-white dark:text-slate-900"
+                      : "border-slate-200 bg-white text-slate-600 dark:border-white/10 dark:bg-[#11131C] dark:text-slate-300"
+                  }`}
                 >
-                  {column.title} · {items.length}
-                  {hasOverdue ? <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-600" /> : null}
+                  {column.title} ({items.length})
+                  {hasOverdue ? <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-red-600 ring-2 ring-white dark:ring-slate-950" /> : null}
                 </button>
               </li>
             );
@@ -254,7 +255,7 @@ export function LeadsBoard({ leads: initialLeads, vehicles, tenantName }: LeadsB
           const track = event.currentTarget;
           if (track.clientWidth > 0) setTab(Math.round(track.scrollLeft / track.clientWidth));
         }}
-        className="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] lg:grid lg:grid-cols-5 lg:gap-3 lg:overflow-visible [&::-webkit-scrollbar]:hidden"
+        className="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] lg:grid lg:grid-cols-5 lg:gap-3.5 lg:overflow-visible [&::-webkit-scrollbar]:hidden"
       >
         {columns.map(({ column, items }) => (
           <section
@@ -269,21 +270,27 @@ export function LeadsBoard({ leads: initialLeads, vehicles, tenantName }: LeadsB
               event.preventDefault();
               handleDrop(column, event.dataTransfer.getData("text/plain"));
             }}
-            className={`w-full shrink-0 snap-center space-y-3 px-0.5 lg:min-h-[60dvh] lg:w-auto lg:min-w-0 lg:rounded-2xl lg:border lg:border-dashed lg:p-2 ${
-              dragOver === column.key ? "lg:border-neutral-400 lg:bg-neutral-100/70 dark:lg:border-white/10 dark:lg:bg-white/5" : "lg:border-neutral-200 dark:lg:border-white/10"
+            className={`w-full shrink-0 snap-center space-y-3 px-0.5 transition-colors lg:min-h-[62dvh] lg:w-auto lg:min-w-0 lg:rounded-2xl lg:border lg:p-3 ${
+              dragOver === column.key
+                ? "lg:border-slate-400 lg:bg-slate-100/80 dark:lg:border-white/25 dark:lg:bg-white/5"
+                : "lg:border-slate-200/80 lg:bg-slate-100/40 dark:lg:border-white/10 dark:lg:bg-white/[0.02]"
             }`}
           >
-            <header className="hidden items-center justify-between lg:flex">
-              <h2 className="text-sm font-semibold uppercase tracking-wider">{column.title}</h2>
-              <span className="border border-neutral-200 px-2 text-sm font-semibold dark:border-white/10 rounded-xl">{items.length}</span>
+            <header className="hidden items-center justify-between px-1 lg:flex">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                {column.title}
+              </h2>
+              <span className="rounded-full bg-white px-2 py-0.5 text-xs font-bold text-slate-700 shadow-2xs tabular-nums dark:bg-white/10 dark:text-slate-200">
+                {items.length}
+              </span>
             </header>
 
             {items.length === 0 ? (
-              <p className="border border-dashed border-neutral-200 p-6 text-center text-sm font-medium text-neutral-500 dark:border-white/10 rounded-2xl">
+              <div className="rounded-xl border border-dashed border-slate-200 bg-white/50 p-6 text-center text-xs font-medium text-slate-400 dark:border-white/10 dark:bg-transparent">
                 Sin leads en esta etapa
-              </p>
+              </div>
             ) : (
-              <ul className="space-y-3">
+              <ul className="space-y-2.5">
                 {items.map((lead) => (
                   <li
                     key={lead.id}
@@ -338,7 +345,7 @@ export function LeadsBoard({ leads: initialLeads, vehicles, tenantName }: LeadsB
             type="button"
             disabled={busy}
             onClick={() => void confirmSold()}
-            className="h-12 w-full border border-emerald-700 bg-emerald-600 text-lg font-semibold text-white disabled:opacity-50 rounded-xl"
+            className="h-11 w-full rounded-xl bg-emerald-600 text-sm font-bold text-white shadow-2xs transition-colors hover:bg-emerald-700 disabled:opacity-50"
           >
             Sí, marcar como vendido
           </button>
@@ -346,7 +353,7 @@ export function LeadsBoard({ leads: initialLeads, vehicles, tenantName }: LeadsB
             type="button"
             disabled={busy}
             onClick={() => setPrompt(null)}
-            className="h-12 w-full border border-neutral-300 font-semibold dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
+            className="h-11 w-full rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
           >
             No, dejarlo como está
           </button>
@@ -361,7 +368,7 @@ export function LeadsBoard({ leads: initialLeads, vehicles, tenantName }: LeadsB
               setPrompt(null);
               void moveLead(promptLead.id, "WON");
             }}
-            className="h-12 w-full border border-emerald-700 bg-emerald-600 text-lg font-semibold text-white rounded-xl"
+            className="h-11 w-full rounded-xl bg-emerald-600 text-sm font-bold text-white shadow-2xs transition-colors hover:bg-emerald-700"
           >
             Ganado
           </button>
@@ -371,14 +378,14 @@ export function LeadsBoard({ leads: initialLeads, vehicles, tenantName }: LeadsB
               setPrompt(null);
               void moveLead(promptLead.id, "LOST");
             }}
-            className="h-12 w-full border border-transparent bg-neutral-900 text-base font-semibold text-white dark:border-transparent dark:bg-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors rounded-xl"
+            className="h-11 w-full rounded-xl bg-slate-900 text-sm font-semibold text-white transition-colors hover:bg-slate-800 dark:bg-white dark:text-slate-900"
           >
             Perdido
           </button>
           <button
             type="button"
             onClick={() => setPrompt(null)}
-            className="h-12 w-full border border-neutral-300 font-semibold dark:border-white/20 rounded-xl bg-white dark:bg-white/5"
+            className="h-11 w-full rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-300"
           >
             Cancelar
           </button>

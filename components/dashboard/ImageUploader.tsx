@@ -4,7 +4,6 @@ import { useRef, useState, type Dispatch, type SetStateAction } from "react";
 import imageCompression from "browser-image-compression";
 import { AlertCircle, Camera, ChevronLeft, ChevronRight, ImagePlus, Loader2, Star, Trash2 } from "lucide-react";
 import { deleteUploadedObject } from "@/app/dashboard/vehicles/actions";
-import { isHeicFile, normalizeImageFile, TRANSPARENT_PIXEL } from "@/lib/image-input";
 import { MAX_UPLOAD_BYTES, type PresignedResponse } from "@/lib/validators/upload";
 import { MAX_IMAGES_PER_VEHICLE } from "@/lib/validators/vehicle";
 
@@ -77,11 +76,7 @@ export function ImageUploader({ vehicleId, images, onChange, disabled = false }:
 
   async function processFile(file: File, localId: string): Promise<void> {
     try {
-      // Las fotos HEIC del iPhone se convierten a JPEG antes de optimizarlas.
-      const source = await normalizeImageFile(file);
-      if (source !== file) patch(localId, { url: URL.createObjectURL(source) });
-
-      const compressed = await imageCompression(source, {
+      const compressed = await imageCompression(file, {
         maxWidthOrHeight: 1600,
         initialQuality: 0.82,
         fileType: "image/webp",
@@ -122,7 +117,7 @@ export function ImageUploader({ vehicleId, images, onChange, disabled = false }:
     if (!fileList) return;
     setNotice(null);
 
-    const files = Array.from(fileList).filter((file) => file.type.startsWith("image/") || isHeicFile(file));
+    const files = Array.from(fileList).filter((file) => file.type.startsWith("image/"));
     const free = Math.max(0, MAX_IMAGES_PER_VEHICLE - images.length);
     if (files.length > free) setNotice(`Máximo ${MAX_IMAGES_PER_VEHICLE} fotos por auto.`);
 
@@ -137,7 +132,7 @@ export function ImageUploader({ vehicleId, images, onChange, disabled = false }:
         return {
           localId,
           key: null,
-          url: isHeicFile(file) ? TRANSPARENT_PIXEL : URL.createObjectURL(file),
+          url: URL.createObjectURL(file),
           isCover,
           status: "compressing",
           progress: 0,
@@ -200,7 +195,7 @@ export function ImageUploader({ vehicleId, images, onChange, disabled = false }:
       <input
         ref={galleryRef}
         type="file"
-        accept="image/*,.heic,.heif"
+        accept="image/*"
         multiple
         hidden
         onChange={(event) => {
@@ -211,7 +206,7 @@ export function ImageUploader({ vehicleId, images, onChange, disabled = false }:
       <input
         ref={cameraRef}
         type="file"
-        accept="image/*,.heic,.heif"
+        accept="image/*"
         capture="environment"
         hidden
         onChange={(event) => {
