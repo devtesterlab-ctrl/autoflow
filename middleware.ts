@@ -1,11 +1,13 @@
 import NextAuth from "next-auth";
 import { NextResponse } from "next/server";
 import { authConfig } from "./auth.config";
+import { isCatalogPath, parseSingleTenantHosts } from "./lib/single-tenant";
 
 // Instancia liviana (sin Prisma) para poder correr en el Edge Runtime.
 const { auth } = NextAuth(authConfig);
 
 const ROOT_DOMAIN = (process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "localhost:3000").toLowerCase();
+const SINGLE_TENANT_HOSTS = parseSingleTenantHosts(process.env.SINGLE_TENANT_HOSTS);
 const APP_SUBDOMAIN = (process.env.NEXT_PUBLIC_APP_SUBDOMAIN ?? "app").toLowerCase();
 const RESERVED_SUBDOMAINS = new Set([APP_SUBDOMAIN, "www", "api", "admin"]);
 const PUBLIC_ROOT_FILES = new Set(["/robots.txt", "/sitemap.xml"]);
@@ -52,6 +54,14 @@ export default auth((req) => {
   // /sites es una ruta interna: no se accede directo desde afuera.
   if (path === "/sites" || path.startsWith("/sites/")) {
     return new NextResponse("Not found", { status: 404 });
+  }
+
+  // --- Catálogo en una dirección sin dominio propio (ej: mi-proyecto.vercel.app) ---
+  const singleTenantSlug = SINGLE_TENANT_HOSTS.get(host.toLowerCase().split(":")[0]);
+  if (singleTenantSlug && isCatalogPath(path)) {
+    const url = nextUrl.clone();
+    url.pathname = `/sites/${singleTenantSlug}${path === "/" ? "" : path}`;
+    return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
   }
 
   // --- Catálogo público (subdominio o dominio propio) ---

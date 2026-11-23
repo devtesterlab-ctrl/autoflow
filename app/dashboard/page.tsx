@@ -9,7 +9,7 @@ export default async function DashboardPage() {
   const [vehicles, leads] = await Promise.all([db.vehicle.count(), db.lead.count()]);
 
   const origin = getTenantOrigin(tenant);
-  const configured = !/localhost|\.vercel\.app/.test(origin);
+  const configured = !/localhost/.test(origin);
 
   async function logout() {
     "use server";
