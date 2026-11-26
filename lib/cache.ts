@@ -34,3 +34,10 @@ export function invalidateTenantCatalog(
     revalidatePath(`/sites/${domain}`, "layout");
   }
 }
+
+/** Etiqueta del resultado guardado del tablero de estado del administrador. */
+export const SYSTEM_STATUS_TAG = "system-status";
+
+export function invalidateSystemStatus(): void {
+  revalidateTag(SYSTEM_STATUS_TAG);
+}

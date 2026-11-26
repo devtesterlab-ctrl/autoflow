@@ -118,3 +118,12 @@ export function keyFromPublicUrl(url: string): string | null {
   const base = `${requireEnv("R2_PUBLIC_URL").replace(/\/+$/, "")}/`;
   return url.startsWith(base) ? url.slice(base.length) : null;
 }
+
+/** Para el tablero de estado del administrador. */
+export function getR2Client(): S3Client {
+  return getClient();
+}
+
+export function getR2Bucket(): string {
+  return requireEnv("R2_BUCKET");
+}

@@ -8,6 +8,7 @@ import { updateTenantSettings } from "@/app/dashboard/settings/actions";
 import { checkSlugAvailability, type SlugStatus } from "@/app/onboarding/actions";
 import { CatalogPreview } from "@/components/onboarding/CatalogPreview";
 import { slugSchema } from "@/lib/slug";
+import { normalizeImageFile } from "@/lib/image-input";
 import { putWithProgress } from "@/lib/upload-client";
 import { normalizeArgentineWhatsapp } from "@/lib/validators/onboarding";
 import { settingsSchema } from "@/lib/validators/settings";
@@ -134,7 +135,7 @@ export function SettingsForm({ initial, rootDomain, customDomain }: SettingsForm
     setLogoError(null);
     setLogoStatus("processing");
     try {
-      const compressed = await imageCompression(file, {
+      const compressed = await imageCompression(await normalizeImageFile(file), {
         maxWidthOrHeight: 512,
         initialQuality: 0.9,
         fileType: "image/webp",
@@ -324,7 +325,7 @@ export function SettingsForm({ initial, rootDomain, customDomain }: SettingsForm
             <input
               ref={logoInputRef}
               type="file"
-              accept="image/*"
+              accept="image/*,.heic,.heif"
               hidden
               onChange={(event) => {
                 const file = event.target.files?.[0];

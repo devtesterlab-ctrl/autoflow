@@ -5,10 +5,12 @@ import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import type { ActionResult } from "@/lib/action-result";
 import { getPlatformAdmin } from "@/lib/admin";
-import { invalidateTenantCatalog } from "@/lib/cache";
+import { invalidateSystemStatus, invalidateTenantCatalog } from "@/lib/cache";
 import { prisma } from "@/lib/db";
 import { canUseCustomDomain } from "@/lib/plan-config";
 import { ForbiddenError, UnauthorizedError } from "@/lib/session";
+import { runEmailTest, runSystemChecksNow, runUploadTest } from "@/lib/system-status";
+import type { SystemStatus, UploadTestResult } from "@/lib/system-status-types";
 import { idSchema } from "@/lib/validators/vehicle";
 
 // Este módulo usa `prisma` directo a propósito: el administrador de la plataforma opera sobre todas
@@ -151,4 +153,29 @@ export async function setTenantCustomDomain(input: unknown): Promise<ActionResul
     console.error("[setTenantCustomDomain]", error);
     return fail("No pudimos guardar el dominio.");
   }
+}
+
+/** Verificación inmediata del tablero de estado (ignora el resultado guardado). */
+export async function refreshSystemStatusAction(): Promise<ActionResult<SystemStatus>> {
+  const admin = await authenticateAdmin();
+  if (!admin) return fail("No autorizado.");
+
+  invalidateSystemStatus();
+  return { ok: true, data: await runSystemChecksNow() };
+}
+
+/** Sube un archivo de prueba a R2, lo lee por la dirección pública y lo borra. */
+export async function testPhotoUploadAction(): Promise<ActionResult<UploadTestResult>> {
+  const admin = await authenticateAdmin();
+  if (!admin) return fail("No autorizado.");
+
+  return { ok: true, data: await runUploadTest() };
+}
+
+/** Envía un email de prueba al propio administrador. */
+export async function sendTestEmailAction(): Promise<ActionResult<{ ok: boolean; message: string }>> {
+  const admin = await authenticateAdmin();
+  if (!admin) return fail("No autorizado.");
+
+  return { ok: true, data: await runEmailTest(admin.user.email) };
 }

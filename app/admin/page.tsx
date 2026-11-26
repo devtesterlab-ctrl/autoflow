@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Prisma } from "@prisma/client";
+import { StatusSummary } from "@/components/admin/StatusSummary";
 import { requirePlatformAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
 import { ACTIVE_VEHICLE_STATUSES, PLAN_LIMITS, type PlanValue } from "@/lib/plan-config";
@@ -96,6 +97,8 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   return (
     <main className="mx-auto max-w-6xl space-y-8 px-4 py-6">
       <h1 className="text-3xl font-semibold tracking-tight font-display">Agencias</h1>
+
+      <StatusSummary />
 
       <section aria-label="Resumen" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {[

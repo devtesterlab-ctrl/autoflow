@@ -14,6 +14,9 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           </Link>
           <div className="flex items-center gap-4 text-sm font-semibold">
             <span className="hidden max-w-[16rem] truncate text-neutral-400 sm:inline">{user.email}</span>
+            <Link href="/admin/estado" className="underline underline-offset-4">
+              Estado
+            </Link>
             <Link href="/dashboard" className="underline underline-offset-4">
               Mi panel
             </Link>
